@@ -1,0 +1,10 @@
+name: learn-with-gpt
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11.2
+  - pip
+  - bs4=4.12.0
+  - pip:
+      - langchain==0.0.146
+      - llama-index==0.5.4
