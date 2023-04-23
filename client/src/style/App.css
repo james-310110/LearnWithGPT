@@ -1,0 +1,125 @@
+@import url("https://fonts.googleapis.com/css?family=Raleway:500");
+
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 20vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(1px + 2vmin);
+  color: white;
+}
+
+.upload-area {
+  position: fixed;
+  width: 15%;
+  height: 100%;
+  overflow: scroll;
+  background-color: #bebee4;
+}
+
+.fileloader {
+  width: 90%;
+  margin: auto;
+}
+
+.linkArea {
+  min-height: 20rem;
+}
+
+.linkListArea {
+  height: 30vh;
+  display: block;
+  overflow: scroll;
+}
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* make scrollbar transparent */
+}
+
+.repl {
+  margin-left: 15%;
+  position: fixed;
+  width: 85%;
+  height: 100%;
+  background-image: url(https://www.toptal.com/designers/subtlepatterns/uploads/blue-snow.png);
+}
+
+.repl-history {
+  padding: 2rem;
+  height: 83vh;
+  margin: auto;
+  overflow: scroll;
+}
+
+.commandText {
+  text-align: left;
+}
+
+.repl-input {
+  margin: auto;
+  min-height: 15vh;
+}
+
+.repl-command-box {
+  min-width: 60vw;
+  min-height: 80px;
+  margin-left: 1%;
+  display: block;
+  width: calc(85vw - 0px);
+  height: calc(8vh - 0px);
+  -webkit-box-shadow: 0px 3px 3px #747171;
+  -moz-box-shadow: 0px 3px 3px #747171;
+  box-shadow: 0px 3px 3px #747171;
+}
+
+.paragraph {
+  text-align: left;
+  white-space: pre-wrap;
+  font-size: large;
+  text-indent: 2em;
+  font-family: "Raleway";
+  font-style: bold;
+}
+
+a {
+  font-family: "Raleway";
+}
+.ant-timeline-item-content {
+  font-family: "Raleway";
+}
+
+input,
+input::placeholder {
+  font: 30px/3 sans-serif;
+}
+
+input[type="text"] {
+  font-size: 30px;
+}
+
+.repl-button {
+  align-items: center;
+  width: 6rem;
+  height: 40px;
+  padding: 8px;
+}
+
+.ant-list-item-meta-content {
+  align-items: left;
+  text-align: left;
+}
+
+.ant-list-item {
+  /* text-align: left; */
+}
+
+.ant-timeline-label {
+  text-align: left;
+  align-items: left;
+}
