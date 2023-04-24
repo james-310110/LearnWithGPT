@@ -16,11 +16,6 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": [
-    "src-old",
-    "tests",
-    "src-old/components",
-    "src/global/httpRequestsUtils.ts"
-  ],
+  "include": ["src", "test", "test"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
