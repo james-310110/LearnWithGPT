@@ -31,6 +31,7 @@ def post_data(request: HttpRequest):
     # catch any errors and propogate to front end
     # if no errors/exceptions, store the files and links in memory to be fetched in get_data()
     if request.method == 'POST':
+        # TODO: django file format only, no url
         file = request.FILES.get('file')          
         if file is None:
             return JsonResponse({"result": "error_bad_request", "data": "missing file"})
