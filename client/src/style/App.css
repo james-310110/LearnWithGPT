@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Raleway:500");
+@import url('https://fonts.googleapis.com/css?family=Raleway:500');
 
 .App {
   text-align: center;
@@ -66,13 +66,17 @@
   min-height: 15vh;
 }
 
+.navbar {
+  margin-left: 15%;
+}
+
 .repl-command-box {
-  min-width: 60vw;
-  min-height: 80px;
+  width: 75vw;
+  height: 80px;
   margin-left: 1%;
   display: block;
-  width: calc(85vw - 0px);
-  height: calc(8vh - 0px);
+  /* width: calc(85vw - 0px); */
+  /* height: calc(8vh - 0px); */
   -webkit-box-shadow: 0px 3px 3px #747171;
   -moz-box-shadow: 0px 3px 3px #747171;
   box-shadow: 0px 3px 3px #747171;
@@ -83,15 +87,15 @@
   white-space: pre-wrap;
   font-size: large;
   text-indent: 2em;
-  font-family: "Raleway";
+  font-family: 'Raleway';
   font-style: bold;
 }
 
 a {
-  font-family: "Raleway";
+  font-family: 'Raleway';
 }
 .ant-timeline-item-content {
-  font-family: "Raleway";
+  font-family: 'Raleway';
 }
 
 input,
@@ -99,8 +103,13 @@ input::placeholder {
   font: 30px/3 sans-serif;
 }
 
-input[type="text"] {
+input[type='text'] {
   font-size: 30px;
+}
+
+.form-control {
+  font: 10px sans-serif;
+  font-size: 10px;
 }
 
 .repl-button {
@@ -115,11 +124,31 @@ input[type="text"] {
   text-align: left;
 }
 
-.ant-list-item {
-  /* text-align: left; */
-}
-
 .ant-timeline-label {
   text-align: left;
   align-items: left;
+}
+
+@media (max-width: 1800px) {
+  .repl-command-box {
+    width: 70vw;
+  }
+}
+
+@media (max-width: 1500px) {
+  .repl-command-box {
+    width: 60vw;
+  }
+  .repl-history {
+    height: 80vh;
+  }
+}
+
+@media (max-width: 1000px) {
+  .repl-command-box {
+    width: 50vw;
+  }
+  .repl-history {
+    height: 50vh;
+  }
 }
