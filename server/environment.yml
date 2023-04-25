@@ -4,7 +4,10 @@ channels:
 dependencies:
   - python=3.11.2
   - pip
+  - django=4.2
   - bs4=4.12.0
   - pip:
       - langchain==0.0.146
       - llama-index==0.5.4
+      - black==23.3.1
+      - unstructured==3.8.15
