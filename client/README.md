@@ -1,9 +1,9 @@
-# cs32 Map Frontend
+# Learn With GPT Frontend
 
 #### Desciprtion
 
-- The web application interface work with MapBox, using the backend to filter the GeoJson, and provide some helpful interaction.
-- Here is the [repo](https://github.com/cs0320-s2023/sprint-5-mke2-ylu168/tree/master/map-frontend "Go").
+- The web application interface used for LearnWithGPT to provide upload, query and access for the server.
+- Here is the [repo](https://github.com/scli-James/LearnWithGPT/tree/main/client 'Go').
 
 ## How to run
 
@@ -15,19 +15,19 @@
 
 - HTML & CSS
 
-  - Based on gear up echo to redesign, use [bootstrap V5](https://getbootstrap.com/docs/5.2/getting-started/introduction/ "Go") to make the page pretty and user-friendly.
+  - Based on REPL to redesign, use [bootstrap V5](https://getbootstrap.com/docs/5.2/getting-started/introduction/ 'Go') and [ant design](https://ant.design/docs/react/introduce) to make the page pretty and user-friendly.
 
 - TypeScript & React
 
   - Use the React to return the function as component.
-  - Import `MapBox` to use the map as main function.
+  - Import `file` upload to allow user upload the file and link.
   - Use `useState` and `useEffect` to track the attribute and rerender the page.
   - Since it is return the `.tsx` function, we can just write the function with html element which is making it simple.
 
 - Accessibility
 
   - Provide the aria-lable to make the screen reader to identify the content.
-  - Use `%` to make the element fit the screent.
+  - Use `%` and `media` to make the element fit the screent.
 
 - Improvement
 
@@ -37,14 +37,14 @@
 
 ## Error
 
-When run the test, since there is a bug the react hook refer each other to make heap out of memory, you may need to comment out the `handleSubmit()` and `handleConfirm()` before run test, or your machine will stuck there.
+If the file is not upload success, the list of files still appear file with red, user need to remove it manually.
 
 ## Test
 
 - main
-  - Becasue the MapBox is not avalibale for testing, we only test the input and output element to make sure it works.
+  - Becasue the function is not very complicated, we just test the button and some display element.
 - Mocked
-  - Since at the very begining the web is using the GeoJson data to display, it is not need to mocked.
+  - We use the `Mock Server Worker` to mock the server to simulate. And since it is only two api, which is easy to implement.
 
 ---
 

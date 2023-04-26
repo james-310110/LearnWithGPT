@@ -1,44 +1,46 @@
-import React from "react";
-import { Timeline } from "antd";
+import { useState } from 'react'
+import { Timeline, TimelineItemProps } from 'antd'
+import { time } from '../interface/DataWrap'
 
-const Time: React.FC = () => {
+interface timePorps {
+  data: time
+}
+
+export default function VideoTime(props: timePorps) {
+  const [start, setStart] = useState<number>(0)
+  const items:
+    | TimelineItemProps[]
+    | { label: JSX.Element; children: string }[]
+    | undefined = []
+  props.data.timeline.forEach((element) => {
+    items.push({
+      label: (
+        <a href="#" onClick={() => setStart(convert(element.time))}>
+          {element.time}
+        </a>
+      ),
+      children: element.text,
+    })
+  })
+
   return (
-    <Timeline
-      mode={"left"}
-      items={[
-        {
-          label: (
-            <a href="#" onClick={() => changeVideo(0)}>
-              00:00
-            </a>
-          ),
-          children: "Create a services",
-        },
-        {
-          label: (
-            <a href="#" onClick={() => changeVideo(120)}>
-              02:00
-            </a>
-          ),
-          children: "Solve initial network problems",
-        },
-        {
-          children: "Technical testing",
-        },
-        {
-          label: (
-            <a href="#" onClick={() => changeVideo(180)}>
-              03:00
-            </a>
-          ),
-          children: "Network problems being solved",
-        },
-      ]}
-    />
-  );
-};
+    <>
+      <iframe
+        width="700"
+        height="400"
+        style={{ alignItems: 'Center' }}
+        src={`https://www.youtube.com/embed/${props.data.id}?autoplay=1&mute=1&start=${start}`}
+      ></iframe>
+      <Timeline mode={'left'} items={items} />
+    </>
+  )
+}
 
-export default Time;
-function changeVideo(time: number): void {
-  console.log(time);
+function convert(time: string): number {
+  console.log(time)
+  var a = time.split(':') // split it at the colons
+
+  // minutes are worth 60 seconds. Hours are worth 60 minutes.
+  var seconds = +a[0] * 60 * 60 + +a[1] * 60 + +a[2]
+  return seconds
 }

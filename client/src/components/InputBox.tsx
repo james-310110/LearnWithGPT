@@ -1,24 +1,22 @@
-import { Select, UploadFile } from "antd";
-import { useEffect, useState } from "react";
-import { T } from "vitest/dist/types-94cfe4b4";
-import { isErrorResponse, isSuccessResponse } from "../interface/Response";
+import { message, Select, Spin } from 'antd'
+import { useState } from 'react'
+import { DataWrap, isDataWrap } from '../interface/DataWrap'
+import { isErrorResponse, isSuccessResponse } from '../interface/Response'
 
 interface InputBoxProps {
   // fileList: UploadFile<T>[];
-  fileList: string[];
-  linkList: string[];
+  fileList: string[]
+  linkList: string[]
+  setHistory: (d: DataWrap[] | ((q: DataWrap[]) => DataWrap[])) => void
+  server: string
 }
 
-// Choose to run depend on which server!
-
-const server = "http://localhost:8000/";
-// const server = "http://mock/";
-
 export default function InputBox(props: InputBoxProps) {
-  const [textBox, setTextBox] = useState<string>("");
-  const [commandHistory, setCommandHistory] = useState<string[]>([]);
-  const [count, setCount] = useState<number>(0);
-  const [format, setFormat] = useState<string>("paragraph");
+  const [textBox, setTextBox] = useState<string>('')
+  const [commandHistory, setCommandHistory] = useState<string[]>([])
+  const [count, setCount] = useState<number>(0)
+  const [format, setFormat] = useState<string>('paragraph')
+  const [loading, setLoading] = useState(false)
 
   /**
    * Handles the submit button being clicked or the enter key being pressed!
@@ -27,18 +25,45 @@ export default function InputBox(props: InputBoxProps) {
    */
   function handleSubmit() {
     if (textBox.length != 0) {
-      const command = textBox;
-      setCommandHistory([...commandHistory, command]);
-      setCount(commandHistory.length);
-      setTextBox("");
+      const command = textBox
+      setCommandHistory([...commandHistory, command])
+      setCount(commandHistory.length)
+      setTextBox('')
       let json = JSON.stringify({
         fileList: props.fileList,
         linkList: props.linkList,
         format: format,
         prompt: textBox,
-      });
-      const data = getData(json);
+      })
+      getData(json)
     }
+  }
+
+  /**
+   * handle to show the table, prepare for backend
+   */
+  async function getData(args: string) {
+    setLoading(true)
+    const data = await getResponse(`${props.server}getdata?data=${args}`)
+    const json = await data.json()
+    console.log(json)
+    if (isSuccessResponse(json)) {
+      const data = { data: json.data }
+      if (isDataWrap(data)) {
+        data.prompt = textBox
+        props.setHistory((list) => [...list, data])
+      } else {
+        message.error(`Error: cannot define return data, check with server.`)
+        message.error(`Error: cannot define return data, check with server.`)
+      }
+    } else if (isErrorResponse(json)) {
+      message.error(`Error: ${json.data}`)
+      message.error(`Error: ${json.data}`)
+    } else {
+      message.error(`Error: server not response correctly.`)
+      message.error(`Error: server not response correctly.`)
+    }
+    setLoading(false)
   }
 
   /**
@@ -46,11 +71,11 @@ export default function InputBox(props: InputBoxProps) {
    */
   function up(): void {
     if (count < 0) {
-      setCount(0);
-      return;
+      setCount(0)
+      return
     }
-    setTextBox(commandHistory[count]);
-    setCount((e) => e - 1);
+    setTextBox(commandHistory[count])
+    setCount((e) => e - 1)
   }
 
   /**
@@ -58,66 +83,59 @@ export default function InputBox(props: InputBoxProps) {
    */
   function down(): void {
     if (count >= commandHistory.length - 1) {
-      setCount(commandHistory.length);
-      return;
+      setCount(commandHistory.length)
+      return
     }
 
-    if (count <= commandHistory.length) setTextBox(commandHistory[count + 1]);
-    setCount((e) => e + 1);
+    if (count <= commandHistory.length) setTextBox(commandHistory[count + 1])
+    setCount((e) => e + 1)
   }
 
   return (
     <div className="repl-input p-3 d-flex align-items-center">
-      <input
-        aria-label={"Prompt input box"}
-        placeholder="Prompt Here!"
-        type="text"
-        className="repl-command-box p-2"
-        onChange={(e) => setTextBox(e.target.value)}
-        value={textBox}
-        onKeyUp={(e) => {
-          if (e.key == "Enter") handleSubmit();
-          if (e.keyCode == 38) up();
-          if (e.keyCode == 40) down();
-        }}
-      />
+      <Spin
+        spinning={loading}
+        delay={500}
+        tip="Loading"
+        size="large"
+        className="repl-command-box"
+      >
+        <input
+          disabled={loading}
+          aria-label={'Prompt input box'}
+          placeholder="Prompt Here!"
+          type="text"
+          className="repl-command-box p-2"
+          onChange={(e) => setTextBox(e.target.value)}
+          value={textBox}
+          onKeyUp={(e) => {
+            if (e.key == 'Enter') handleSubmit()
+            if (e.keyCode == 38) up()
+            if (e.keyCode == 40) down()
+          }}
+        />
+      </Spin>
       <div className="d-flex flex-wrap align-content-around ms-4 align-items-start">
         <button
           className="repl-button p-2 m-1 btn btn-primary"
           onClick={() => handleSubmit()}
-          aria-label={"Submit button"}
+          aria-label={'Prompt button'}
         >
           Submit
         </button>
         <Select
           placeholder="Format"
-          style={{ width: 120 }}
+          style={{ width: 100 }}
           onChange={(e) => setFormat(e)}
           options={[
-            { value: "paragraph", label: "Paragraph" },
-            { value: "tree", label: "Tree" },
-            { value: "time", label: "Timeline" },
+            { value: 'paragraph', label: 'Paragraph' },
+            { value: 'tree', label: 'Tree' },
+            { value: 'time', label: 'Timeline' },
           ]}
         />
       </div>
     </div>
-  );
-}
-
-/**
- * handle to show the table, prepare for backend
- */
-async function getData(args: string): Promise<string> {
-  const data = await getResponse(`${server}getdata?data=${args}`);
-  const json = await data.json();
-  console.log(json);
-  if (isSuccessResponse(json)) {
-    return json.data;
-  } else if (isErrorResponse(json)) {
-    return json.data;
-  } else {
-    return "Error: server not response correctly.";
-  }
+  )
 }
 
 /**
@@ -129,32 +147,10 @@ async function getResponse(url: string): Promise<Response> {
   return await fetch(url).catch(() => {
     return new Response(
       JSON.stringify({
-        result: "Serer error",
-        msg: "Access server failed.",
+        result: 'Serer error',
+        msg: 'Access server failed.',
         data: [],
       })
-    );
-  });
-}
-
-/**
- * use given classname to loop the element and use given function to do with each element
- *
- * @param className the classname of element
- * @param fun the function that the element need to do
- */
-function findElementToDo(className: string, fun: (e: HTMLElement) => any) {
-  const elements: HTMLCollectionOf<Element> =
-    document.getElementsByClassName(className);
-  if (elements == null) return;
-  for (var i = 0; i < elements.length; i++) {
-    var element = elements.item(i);
-    if (element == null) {
-      console.log("Couldn't find input element");
-    } else if (!(element instanceof HTMLElement)) {
-      console.log(`Found element ${element}, but it wasn't a p`);
-    } else {
-      fun(element);
-    }
-  }
+    )
+  })
 }
