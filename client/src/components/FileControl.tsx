@@ -122,7 +122,7 @@ const FileControl = (param: FileControlProps) => {
       </div>
 
       <div className="fileArea">
-        <Dragger {...props}>
+        <Dragger {...props} id="inputFile">
           <p className="ant-upload-drag-icon">
             <InboxOutlined />
           </p>

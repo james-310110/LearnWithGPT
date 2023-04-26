@@ -20,7 +20,7 @@
   width: 15%;
   height: 100%;
   overflow: scroll;
-  background-color: #bebee4;
+  background-color: var(--upload);
 }
 
 .fileloader {
@@ -47,7 +47,7 @@
   position: fixed;
   width: 85%;
   height: 100%;
-  background-image: url(https://www.toptal.com/designers/subtlepatterns/uploads/blue-snow.png);
+  background-image: var(--bimage);
 }
 
 .repl-history {
@@ -55,6 +55,10 @@
   height: 83vh;
   margin: auto;
   overflow: scroll;
+}
+
+.listitem {
+  background-color: var(--listitem);
 }
 
 .commandText {
@@ -89,6 +93,7 @@
   text-indent: 2em;
   font-family: 'Raleway';
   font-style: bold;
+  color: var(--text-primary);
 }
 
 a {
@@ -105,6 +110,8 @@ input::placeholder {
 
 input[type='text'] {
   font-size: 30px;
+  background-color: var(--background);
+  color: var(--text-primary);
 }
 
 .form-control {

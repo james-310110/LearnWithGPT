@@ -125,7 +125,7 @@ export default function InputBox(props: InputBoxProps) {
         </button>
         <Select
           placeholder="Format"
-          style={{ width: 120 }}
+          style={{ width: 100 }}
           onChange={(e) => setFormat(e)}
           options={[
             { value: 'paragraph', label: 'Paragraph' },

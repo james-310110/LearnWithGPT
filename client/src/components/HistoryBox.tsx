@@ -16,7 +16,7 @@ function HistoryBox(props: HistoryBoxProps) {
         dataSource={props.history}
         renderItem={(item, index) => (
           <>
-            <List.Item style={{ backgroundColor: '#efdbff', padding: '18px' }}>
+            <List.Item className="listitem" style={{ padding: '20px' }}>
               <List.Item.Meta
                 avatar={
                   <Avatar
