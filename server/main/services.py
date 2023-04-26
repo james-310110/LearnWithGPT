@@ -56,18 +56,23 @@ class DocumentLoader:
             by_whom (str): the id of the user/session who uploaded the file
             at_when (str): the time when the file was uploaded
         """
+        print("loading file...")
         file_name = input_file.name
         file_type = file_name.split(".")[-1]
+        # setting the appropriate extractor
         file_extractor = self.file_extractors.get(
             file_type, self.default_file_extractor
         )
         file_reader = download_loader(file_extractor)
+        # loading documents from input file using the extractor
         documents = file_reader().load_data(file=input_file)
+        # generating uid
         uid = get_document_id(file_name, by_whom, at_when)
+        # saving documents as nodes to db
         self._save_document_as_nodes_to_db(uid, documents)
-        print("Saved {file_name} to db")
-        print("Number of nodes: {len(documents)}")
-        print("Uid: {uid}")
+        print(f"Saved {file_name} to db")
+        print(f"Number of nodes: {len(documents)}")
+        print(f"Uid: {uid}")
 
     def load_web(
         self,
@@ -130,8 +135,11 @@ class DocumentLoader:
         return endpoints
 
     def _save_document_as_nodes_to_db(self, uid, documents):
+        # setting node parser
         parser = SimpleNodeParser()
+        # getting nodes from documents
         nodes = parser.get_nodes_from_documents(documents)
+        # saving nodes to db
         DocumentModel.set_nodes(uid=uid, nodes=nodes)
 
 

@@ -19,7 +19,6 @@ with open("keys_and_tokens.json", "r") as f:
 
 doc_loader = DocumentLoader()
 
-
 def get_data(request: HttpRequest):
     question_str = request.GET.get("question")
     if question_str is None:
