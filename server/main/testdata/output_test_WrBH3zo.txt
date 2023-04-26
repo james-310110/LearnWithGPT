@@ -1,0 +1,12 @@
+I recommend you to take a look at Django RequestFactory. It's the best way to mock data provided in the request.
+
+Said that, I found several flaws in your code.
+
+"unit" testing means to test just one "unit" of functionality. So, if you want to test that view you'd be testing the view, and the file system, ergo, not really unit test. To make this point more clear. If you run that test, and the view works fine, but you don't have permissions to save that file, your test would fail because of that.
+Other important thing is test speed. If you're doing something like TDD the speed of execution of your tests is really important. Accessing any I/O is not a good idea.
+So, I recommend you to refactor your view to use a function like:
+
+def upload_file_to_location(request, location=None): # Can use the default configured
+And do some mocking on that. You can use Python Mock.
+
+PS: You could also use Django Test Client But that would mean that you're adding another thing more to test, because that client make use of Sessions, middlewares, etc. Nothing similar to Unit Testing.
