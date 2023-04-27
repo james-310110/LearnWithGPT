@@ -12,14 +12,14 @@ import InputBox from './components/InputBox'
 import { DataWrap } from './interface/DataWrap'
 import './style/App.css'
 import useLocalStorage from 'use-local-storage'
-import { link } from 'fs'
+import Pair from './interface/Pair'
 
 function App() {
   const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches
   const [theme, setTheme] = useLocalStorage('theme', defaultDark ? 'dark' : 'light')
   // const [fileList, setFileList] = useState<Array<UploadFile<T>>>([]);
-  const [fileList, setFileList] = useState<Array<string>>([])
-  const [linkList, setLinkList] = useState<Array<string>>([])
+  const [fileList, setFileList] = useState<Array<Pair>>([])
+  const [linkList, setLinkList] = useState<Array<Pair>>([])
   const [history, setHistory] = useState<Array<DataWrap>>([])
   // Choose to run depend on which server!
   const server = 'http://localhost:8000/'

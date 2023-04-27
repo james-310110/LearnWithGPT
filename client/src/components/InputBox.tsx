@@ -1,12 +1,13 @@
 import { message, Select, Spin } from 'antd'
 import { useState } from 'react'
 import { DataWrap, isDataWrap } from '../interface/DataWrap'
+import Pair from '../interface/Pair'
 import { isErrorResponse, isSuccessResponse } from '../interface/Response'
 
 interface InputBoxProps {
   // fileList: UploadFile<T>[];
-  fileList: string[]
-  linkList: string[]
+  fileList: Pair[]
+  linkList: Pair[]
   setHistory: (d: DataWrap[] | ((q: DataWrap[]) => DataWrap[])) => void
   server: string
 }

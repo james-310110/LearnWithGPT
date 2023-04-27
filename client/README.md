@@ -32,14 +32,14 @@
 
 - Improvement
 
-  - Provide Pin remove function for user.
-  - Using Pop up window to alert the error.
-  - Autofill the latitude and longitude by mouse clicking for user.
+  - Use more pretty components to make the frontend user-friendly and beautiful, like the color, shape.
+  - Provide more format for user to choose and the response could be interactive.
+  - Make the response box for history to be more interesting and structural.
 
 ## Error
 
-- If the file is not upload success, the list of files still appear file with red, user need to remove it manually.
-- The message box show on would be delay, and the first time response will not be shown!
+- If the file is not upload success, the list of files still appear file in the upload list, user need to remove it manually.
+- The message box show on would be delay, and the first time response maybe will not be shown!
 
 ## Test
 

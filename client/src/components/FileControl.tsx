@@ -3,42 +3,47 @@ import { DeleteOutlined, InboxOutlined, LinkOutlined } from '@ant-design/icons'
 import type { UploadProps } from 'antd'
 import { message, Upload } from 'antd'
 import validator from 'validator'
+import Pair from '../interface/Pair'
 
 const { Dragger } = Upload
 
 interface FileControlProps {
-  linkList: string[]
-  fileList: string[]
+  linkList: Pair[]
+  fileList: Pair[]
   // setFileList: (
   //   d: UploadFile<T>[] | ((q: UploadFile<T>[]) => UploadFile<T>[])
   // ) => void;
-  setFileList: (d: string[] | ((q: string[]) => string[])) => void
-  setLinkList: (d: string[] | ((q: string[]) => string[])) => void
+  setFileList: (d: Pair[] | ((q: Pair[]) => Pair[])) => void
+  setLinkList: (d: Pair[] | ((q: Pair[]) => Pair[])) => void
   server: string
 }
 
 const FileControl = (param: FileControlProps) => {
   const [link, setLink] = useState<string>('')
+  const [time, setTime] = useState<number>(0)
 
   const props: UploadProps = {
     name: 'file',
     multiple: true,
-    action: param.server + 'postdata',
+    action: param.server + 'postdata' + `?upload_time=${time}`,
     beforeUpload: (file) => {
-      // const isPDF = file.type === "application/pdf";
-      // const istxt = file.type === "text/plain";
+      setTime(Date.now())
       const oversize = file.size <= 10 * 1024 * 1024
-      const exist = param.fileList.includes(file.name)
+      var exist = false
+      param.fileList.forEach((e) => {
+        if (e.name === file.name) {
+          exist = true
+          return
+        }
+      })
       if (exist) {
+        message.error(`${file.name} is exist, please remove first`)
         message.error(`${file.name} is exist, please remove first`)
       }
       if (!oversize) {
-        message.error(`${file.name} is too big`)
+        message.error(`${file.name} is too big, please remove it`)
+        message.error(`${file.name} is too big, please remove it`)
       }
-      // if (!istxt && !isPDF) {
-      //   message.error(`${file.name} is not a correct file`);
-      // }
-      // return (isPDF || istxt) && oversize && !exist;
       return oversize && !exist
     },
     onChange(info) {
@@ -49,10 +54,13 @@ const FileControl = (param: FileControlProps) => {
         message.error(`${info.file.name} file upload failed.`)
       }
       if (info.file.name != undefined) {
+        console.log(info.file.status)
         if (info.file.status === 'removed') {
-          param.setFileList((list) => list.filter((link) => link !== info.file.name))
-        } else {
-          param.setFileList([...param.fileList, info.file.name])
+          param.setFileList((list) => list.filter((link) => link.name !== info.file.name))
+        } else if (info.file.status === undefined) {
+          info.file.status = 'error'
+        } else if (info.file.status === 'done') {
+          param.setFileList([...param.fileList, { name: info.file.name, time: time }])
         }
       }
     },
@@ -64,12 +72,18 @@ const FileControl = (param: FileControlProps) => {
 
   function handleAddLink() {
     if (validator.isURL(link)) {
-      if (param.linkList.includes(link)) {
-        message.error('Link is exist, check again')
+      var noExist = param.linkList.every((v) => {
+        if (v.name === link) {
+          return false
+        }
+        return true
+      })
+      if (!noExist) {
+        message.error(`${link} is exist, please check again`)
         return
       }
       message.success(`Link uploaded successfully.`)
-      param.setLinkList([...param.linkList, link])
+      param.setLinkList([...param.linkList, { name: link, time: Date.now() }])
       setLink('')
     } else {
       message.error('Link format incorrect')
@@ -77,7 +91,7 @@ const FileControl = (param: FileControlProps) => {
   }
 
   function handleDelLink(remove: string) {
-    param.setLinkList((list) => list.filter((link) => link !== remove))
+    param.setLinkList((list) => list.filter((link) => link.name !== remove))
     setLink('')
     message.success(`Link removed successfully.`)
   }
@@ -106,11 +120,11 @@ const FileControl = (param: FileControlProps) => {
         <div className="linkListArea">
           {param.linkList.map((item, i) => {
             return (
-              <p key={i} aria-label={item}>
+              <p key={i} aria-label={item.name}>
                 <LinkOutlined style={{ float: 'left' }} className="pt-1" />
-                <span>{item}</span>
+                <span>{item.name}</span>
                 <DeleteOutlined
-                  onClick={() => handleDelLink(item)}
+                  onClick={() => handleDelLink(item.name)}
                   style={{ float: 'right' }}
                   className="pt-1"
                   id={'del-' + i}
