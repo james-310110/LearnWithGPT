@@ -28,6 +28,7 @@
 
   - Provide the aria-lable to make the screen reader to identify the content.
   - Use `%` and `media` to make the element fit the screent.
+  - Dark mode support.
 
 - Improvement
 
@@ -37,7 +38,8 @@
 
 ## Error
 
-If the file is not upload success, the list of files still appear file with red, user need to remove it manually.
+- If the file is not upload success, the list of files still appear file with red, user need to remove it manually.
+- The message box show on would be delay, and the first time response will not be shown!
 
 ## Test
 
