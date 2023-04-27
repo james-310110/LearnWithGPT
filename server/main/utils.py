@@ -2,7 +2,7 @@ import hashlib
 
 from llama_index import GPTSimpleVectorIndex
 
-from main.models import DocumentModel, IndexModel
+from main.models import DocumentModel, CollectionModel
 
 
 def get_document_id(str1="", str2="", str3=""):
@@ -33,12 +33,12 @@ def get_nodes(uid):
 
 
 def set_index(uid, nodes):
-    IndexModel.set_nodes(uid, nodes)
+    CollectionModel.set_index(uid, nodes)
 
 
 def has_index(uid):
-    return IndexModel.has_index(uid)
+    return CollectionModel.has_index(uid)
 
 
 def get_index(uid):
-    return IndexModel.get_index(uid)
+    return CollectionModel.get_index(uid)

@@ -57,7 +57,6 @@ class DocumentLoader:
             by_whom (str): the id of the user/session who uploaded the file
             at_when (str): the time when the file was uploaded
         """
-        print("loading file...")
         file_name = input_file.name
         file_type = file_name.split(".")[-1]
         # setting the appropriate extractor
@@ -74,9 +73,6 @@ class DocumentLoader:
         uid = get_document_id(file_name, by_whom, at_when)
         # saving documents as nodes to db
         self._save_document_as_nodes_to_db(uid, documents)
-        print(f"Saved {file_name} to db")
-        print(f"Number of nodes: {len(documents)}")
-        print(f"Uid: {uid}")
 
     def load_web(
         self,
