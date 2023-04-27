@@ -19,6 +19,7 @@ with open("keys_and_tokens.json", "r") as f:
 
 doc_loader = DocumentLoader()
 
+
 def get_data(request: HttpRequest):
     question_str = request.GET.get("question")
     if question_str is None:
@@ -62,7 +63,7 @@ def get_data(request: HttpRequest):
 
 def post_data(request: HttpRequest):
     print("post received")
-    input_file = request.POST.get("file")
+    input_file = request.FILES.get("file")
     # TODO swap with user_id later
     # by_whom = request.session.session_key
     by_whom = "test_session_key"

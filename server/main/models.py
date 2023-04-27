@@ -7,7 +7,7 @@ from llama_index.data_structs import Node
 class DocumentModel(models.Model):
     uid = models.CharField(primary_key=True, max_length=256)
     # not sure to use JSONField or TextField for json string
-    nodes = models.JSONField()
+    nodes = models.TextField()
 
     @classmethod
     def set_nodes(cls, uid, nodes):
@@ -31,7 +31,7 @@ class DocumentModel(models.Model):
 class IndexModel(models.Model):
     uid = models.CharField(primary_key=True, max_length=256)
     # not sure to use JSONField or TextField for json string
-    index = models.JSONField()
+    index = models.TextField()
     # memory =
 
     @classmethod

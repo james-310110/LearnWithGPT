@@ -7,6 +7,7 @@ from main.models import DocumentModel
 from urllib.parse import urljoin, urlparse
 from llama_index import Document, download_loader
 from llama_index.node_parser import SimpleNodeParser
+from unstructured.partition.auto import partition
 
 
 class DocumentLoader:
@@ -60,12 +61,15 @@ class DocumentLoader:
         file_name = input_file.name
         file_type = file_name.split(".")[-1]
         # setting the appropriate extractor
-        file_extractor = self.file_extractors.get(
-            file_type, self.default_file_extractor
-        )
-        file_reader = download_loader(file_extractor)
+        # file_loader = download_loader(
+        #     self.file_extractors.get(file_type, self.default_file_extractor)
+        # )()
+        # documents = file_loader.load_data(file=input_file)
         # loading documents from input file using the extractor
-        documents = file_reader().load_data(file=input_file)
+        # TODO !!!!! re-implement load_data locally, passing file instead of path
+        elements = partition(file=input_file)
+        text_chunks = [" ".join(str(el).split()) for el in elements]
+        documents = [Document("\n\n".join(text_chunks), extra_info=None)]
         # generating uid
         uid = get_document_id(file_name, by_whom, at_when)
         # saving documents as nodes to db
