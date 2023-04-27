@@ -1,4 +1,9 @@
-import { AlertTwoTone, QuestionCircleOutlined } from '@ant-design/icons'
+import {
+  AlertTwoTone,
+  DeleteFilled,
+  DeleteTwoTone,
+  QuestionCircleOutlined,
+} from '@ant-design/icons'
 import { Tooltip } from 'antd'
 import React, { useState, useEffect, useMemo } from 'react'
 import FileControl from './components/FileControl'
@@ -7,6 +12,7 @@ import InputBox from './components/InputBox'
 import { DataWrap } from './interface/DataWrap'
 import './style/App.css'
 import useLocalStorage from 'use-local-storage'
+import { link } from 'fs'
 
 function App() {
   const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -23,6 +29,37 @@ function App() {
     const newTheme = theme === 'light' ? 'dark' : 'light'
     setTheme(newTheme)
   }
+
+  const delHistory = () => {
+    setHistory([])
+  }
+
+  useEffect(() => {
+    const fl = window.sessionStorage.getItem('filelist')
+    if (fl != 'undefined') {
+      if (fl != null) {
+        setFileList(() => JSON.parse(fl))
+      }
+    }
+    const ll = window.sessionStorage.getItem('linklist')
+    if (ll != 'undefined') {
+      if (ll != null) {
+        setLinkList(() => JSON.parse(ll))
+      }
+    }
+    const his = window.sessionStorage.getItem('history')
+    if (his != 'undefined') {
+      if (his != null) {
+        setHistory(() => JSON.parse(his))
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    window.sessionStorage.setItem('filelist', JSON.stringify(fileList))
+    window.sessionStorage.setItem('linklist', JSON.stringify(linkList))
+    window.sessionStorage.setItem('history', JSON.stringify(history))
+  }, [fileList, linkList, history])
 
   return (
     <div className="App" data-theme={theme}>
@@ -49,18 +86,45 @@ function App() {
             zIndex: '99999',
             color: 'purple',
           }}
+          height={'10em'}
+          width={'10em'}
         />
       </Tooltip>
-      <AlertTwoTone
-        onClick={switchTheme}
-        style={{
-          position: 'absolute',
-          top: '30px',
-          right: '10px',
-          zIndex: '99999',
-        }}
-        twoToneColor={theme == 'dark' ? 'white' : 'black'}
-      />
+      <Tooltip
+        placement="right"
+        title={`Change to drak/light mode`}
+        arrow={true}
+        color={'grey'}
+      >
+        <AlertTwoTone
+          onClick={switchTheme}
+          style={{
+            position: 'absolute',
+            top: '35px',
+            right: '10px',
+            zIndex: '99999',
+          }}
+          twoToneColor={theme == 'dark' ? 'white' : 'black'}
+        />
+      </Tooltip>
+      <Tooltip
+        placement="right"
+        title={`Remove query history`}
+        arrow={true}
+        color={'grey'}
+      >
+        <DeleteTwoTone
+          onClick={delHistory}
+          style={{
+            position: 'absolute',
+            top: '60px',
+            right: '10px',
+            zIndex: '99999',
+          }}
+          twoToneColor={'red'}
+        />
+      </Tooltip>
+
       <div className="upload-area">
         <br></br>
         <FileControl
