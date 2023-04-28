@@ -14,6 +14,7 @@ dependencies:
   - poppler
   - libmagic
   - numpy
+  - django-cors-headers
   - pip:
       - langchain==0.0.146
       - llama-index==0.5.4
