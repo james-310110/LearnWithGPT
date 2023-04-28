@@ -57,7 +57,7 @@ def get_data(request: HttpRequest):
     # response["result"] = "success"
     # response["question"] = question
     # response["answer"] = answer
-    return JsonResponse({"result": "success", "question": question, "answer": answer})
+    return JsonResponse({"result": "success", "question": question, "answer": answer.response})
 
 
 def post_data(request: HttpRequest):
