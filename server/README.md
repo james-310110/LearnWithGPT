@@ -15,4 +15,4 @@
 15. try something like `http://127.0.0.1:8000/getdata?data={%22filelist%22:%20[%22fa%22,%20%22fb%22],%20%22linklist%22:%20[%22.com%22,%20%22.edu%22],%20%22query%22:%20%22qqq%22,%20%22format%22:%20%22html%22}`
 16. For testing, `python manage.py test --verbosity=1`
 17. `main/testdata`: files for testing; `main/urls.py`: define endpoint; `main/views.py`: define endpoint handlers; `main/tests.py`: testing endpoints
-18. each time model changed `python manage.py makemigrations && python manage.py migrate`
+18. each time model changed `python manage.py makemigrations && python manage.py migrate` (try delete `/migrate` and run  `python manage.py migrate --run-syncdb` instead when just first building the env)

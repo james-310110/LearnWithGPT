@@ -27,12 +27,17 @@ def get_data(request: HttpRequest):
     # TODO swap with session_id or user_id later
     by_whom = "test_session_key"
     # by_whom = request.session.session_key
-    file_list = query_dict["file_list"]
-    web_list = query_dict["web_list"]
-    question = query_dict["question"]
+    file_list = query_dict["fileList"]
+    web_list = query_dict["linkList"]
+    question = query_dict["prompt"]
+    format = query_dict["format"]
+    if format == "paragraph":
+        question = "generate a markdown-formatted answer for this question: " + question
     uids = []
     # check if each file matches nodes from db
-    for file_name, at_when in file_list:
+    for file_item in file_list:
+        file_name = file_item["name"]
+        at_when = str(file_item["time"])
         uid = get_document_id(file_name, by_whom, at_when)
         if not has_nodes(uid):
             print("file not exist")
@@ -52,20 +57,21 @@ def get_data(request: HttpRequest):
         set_index(index_id, nodes)
     index = get_index(index_id)
     answer = index.query(question, mode="default")
-    print(answer)
-    # response = {}
-    # response["result"] = "success"
-    # response["question"] = question
-    # response["answer"] = answer
-    return JsonResponse({"result": "success", "question": question, "answer": answer.response})
+    print(f"question: {question}, answer: {answer}")
+    response = {}
+    response["result"] = "success"
+    response["data"] = {}
+    response["data"]["markdown"] = answer.response
+    print(response)
+    return JsonResponse(response)
 
 
 def post_data(request: HttpRequest):
     input_file = request.FILES.get("file")
     # TODO swap with session_id or user_id later
-    by_whom = "test_session_key"
+    by_whom = "test_session_key" if request.session.session_key is None else request.session.session_key
     # by_whom = request.session.session_key
-    at_when = request.POST.get("upload_time")
+    at_when = request.GET.get("upload_time")
     if input_file is None:
         return JsonResponse({"result": "error_bad_request", "data": "missing file"})
     doc_loader.load_file(input_file, by_whom, at_when)
