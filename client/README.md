@@ -7,7 +7,7 @@
 
 ## How to run
 
-- Use the `npm run dev` to run the React server.
+- Use the `npm install` then `npm run dev` to run the React server.
 - Use `npm test` to test the testcases which used for the script and dom.
 - Make sure the backend is up or some function is not working.
 
