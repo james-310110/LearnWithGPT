@@ -1,2 +1,4 @@
 client/node_modules
 server/keys_and_tokens.json
+server/main/__pycache__
+server/main/backend/__pycache__
