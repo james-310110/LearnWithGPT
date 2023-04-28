@@ -44,7 +44,9 @@ def get_data(request: HttpRequest):
             continue
         uids.append(uid)
     # check if each url matches nodes from db
-    for web_url, at_when in web_list:
+    for web_item in web_list:
+        web_url = web_item["name"]
+        at_when = str(web_item["time"])
         uid = get_document_id(web_url, by_whom, at_when)
         if not has_nodes(uid):
             doc_loader.load_web(web_url, by_whom, at_when)
