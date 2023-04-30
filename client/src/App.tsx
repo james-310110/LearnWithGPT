@@ -1,9 +1,4 @@
-import {
-  AlertTwoTone,
-  DeleteFilled,
-  DeleteTwoTone,
-  QuestionCircleOutlined,
-} from '@ant-design/icons'
+import { AlertTwoTone, DeleteTwoTone, QuestionCircleOutlined } from '@ant-design/icons'
 import { Tooltip } from 'antd'
 import React, { useState, useEffect, useMemo } from 'react'
 import FileControl from './components/FileControl'
@@ -13,6 +8,7 @@ import { DataWrap } from './interface/DataWrap'
 import './style/App.css'
 import useLocalStorage from 'use-local-storage'
 import Pair from './interface/Pair'
+import { GoogleLogin } from '@leecheuk/react-google-login'
 
 function App() {
   const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -32,6 +28,10 @@ function App() {
 
   const delHistory = () => {
     setHistory([])
+  }
+
+  const responseGoogle = (response: any) => {
+    console.log(response)
   }
 
   useEffect(() => {
@@ -126,7 +126,15 @@ function App() {
       </Tooltip>
 
       <div className="upload-area">
-        <br></br>
+        <GoogleLogin
+          className="googlelogin"
+          clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
+          buttonText="Google Login"
+          onSuccess={responseGoogle}
+          onFailure={responseGoogle}
+          cookiePolicy={'single_host_origin'}
+          isSignedIn={true}
+        />
         <FileControl
           server={server}
           fileList={fileList}

@@ -15,6 +15,12 @@
   color: white;
 }
 
+.googlelogin {
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
 .upload-area {
   position: fixed;
   width: 15%;

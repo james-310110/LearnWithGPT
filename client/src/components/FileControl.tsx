@@ -10,9 +10,6 @@ const { Dragger } = Upload
 interface FileControlProps {
   linkList: Pair[]
   fileList: Pair[]
-  // setFileList: (
-  //   d: UploadFile<T>[] | ((q: UploadFile<T>[]) => UploadFile<T>[])
-  // ) => void;
   setFileList: (d: Pair[] | ((q: Pair[]) => Pair[])) => void
   setLinkList: (d: Pair[] | ((q: Pair[]) => Pair[])) => void
   server: string
