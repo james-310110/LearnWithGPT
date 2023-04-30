@@ -9,12 +9,13 @@ import HistoryBox from '../src/components/HistoryBox'
 import App from '../src/App'
 import { rest } from 'msw'
 import { setupServer } from 'msw/node'
+import Pair from '../src/interface/Pair'
 
 describe('Element load test', () => {
   test('display the file control'),
     async () => {
-      const [fileList, setFileList] = useState<Array<string>>([])
-      const [linkList, setLinkList] = useState<Array<string>>([])
+      const [fileList, setFileList] = useState<Array<Pair>>([])
+      const [linkList, setLinkList] = useState<Array<Pair>>([])
       render(
         <FileControl
           server={''}
@@ -35,8 +36,8 @@ describe('Element load test', () => {
 
   test('display the repl', async () => {
     ;async () => {
-      const [fileList, setFileList] = useState<Array<string>>([])
-      const [linkList, setLinkList] = useState<Array<string>>([])
+      const [fileList, setFileList] = useState<Array<Pair>>([])
+      const [linkList, setLinkList] = useState<Array<Pair>>([])
       const [history, setHistory] = useState<Array<DataWrap>>([])
       // Choose to run depend on which server!
       const server = 'http://localhost:8000/'
@@ -65,8 +66,8 @@ describe('Element load test', () => {
 describe('Element use test', () => {
   test('displays link', async () => {
     ;async () => {
-      const [fileList, setFileList] = useState<Array<string>>([])
-      const [linkList, setLinkList] = useState<Array<string>>([])
+      const [fileList, setFileList] = useState<Array<Pair>>([])
+      const [linkList, setLinkList] = useState<Array<Pair>>([])
       render(
         <FileControl
           server={''}
@@ -90,7 +91,7 @@ describe('Element use test', () => {
       btn.click()
       // add two link
       expect(screen.getByText(/b.com/i)).toBeInTheDocument()
-      var del = document.getElementById('del-1')
+      var del = document.getElementById('dellink-1')
       del?.click()
       // delete link
       expect(screen.getByText(/b.com/i)).toNotBeInTheDocument()
@@ -99,8 +100,8 @@ describe('Element use test', () => {
 
   test('displays prompt', async () => {
     ;async () => {
-      const [fileList, setFileList] = useState<Array<string>>([])
-      const [linkList, setLinkList] = useState<Array<string>>([])
+      const [fileList, setFileList] = useState<Array<Pair>>([])
+      const [linkList, setLinkList] = useState<Array<Pair>>([])
       const [history, setHistory] = useState<Array<DataWrap>>([])
       // Choose to run depend on which server!
       const server = 'http://localhost:8000/'
@@ -144,8 +145,8 @@ describe('Mock server upload', () => {
 
   test('success response upload', async () => {
     ;async () => {
-      const [fileList, setFileList] = useState<Array<string>>([])
-      const [linkList, setLinkList] = useState<Array<string>>([])
+      const [fileList, setFileList] = useState<Array<Pair>>([])
+      const [linkList, setLinkList] = useState<Array<Pair>>([])
       render(
         <FileControl
           server={''}

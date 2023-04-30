@@ -40,6 +40,7 @@
 
 - If the file is not upload success, the list of files still appear file in the upload list, user need to remove it manually.
 - The message box show on would be delay, and the first time response maybe will not be shown!
+- If the server is not up, the web will not show the response of file upload.
 
 ## Test
 

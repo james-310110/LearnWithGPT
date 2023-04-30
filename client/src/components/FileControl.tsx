@@ -26,6 +26,8 @@ const FileControl = (param: FileControlProps) => {
     name: 'file',
     multiple: true,
     action: param.server + 'postdata' + `?upload_time=${time}`,
+    showUploadList: true,
+    fileList: param.fileList,
     beforeUpload: (file) => {
       setTime(Date.now())
       const oversize = file.size <= 10 * 1024 * 1024
@@ -38,10 +40,8 @@ const FileControl = (param: FileControlProps) => {
       })
       if (exist) {
         message.error(`${file.name} is exist, please remove first`)
-        message.error(`${file.name} is exist, please remove first`)
       }
       if (!oversize) {
-        message.error(`${file.name} is too big, please remove it`)
         message.error(`${file.name} is too big, please remove it`)
       }
       return oversize && !exist
@@ -59,8 +59,11 @@ const FileControl = (param: FileControlProps) => {
           param.setFileList((list) => list.filter((link) => link.name !== info.file.name))
         } else if (info.file.status === undefined) {
           info.file.status = 'error'
-        } else if (info.file.status === 'done') {
-          param.setFileList([...param.fileList, { name: info.file.name, time: time }])
+        } else if (info.file.status === 'done' || info.file.status == 'success') {
+          param.setFileList([
+            ...param.fileList,
+            { name: info.file.name, time: time, uid: info.file.uid },
+          ])
         }
       }
     },
@@ -83,7 +86,10 @@ const FileControl = (param: FileControlProps) => {
         return
       }
       message.success(`Link uploaded successfully.`)
-      param.setLinkList([...param.linkList, { name: link, time: Date.now() }])
+      param.setLinkList([
+        ...param.linkList,
+        { name: link, time: Date.now(), uid: 'none' },
+      ])
       setLink('')
     } else {
       message.error('Link format incorrect')
@@ -127,7 +133,7 @@ const FileControl = (param: FileControlProps) => {
                   onClick={() => handleDelLink(item.name)}
                   style={{ float: 'right' }}
                   className="pt-1"
-                  id={'del-' + i}
+                  id={'dellink-' + i}
                 />
               </p>
             )
