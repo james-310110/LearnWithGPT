@@ -37,9 +37,11 @@ const FileControl = (param: FileControlProps) => {
       })
       if (exist) {
         message.error(`${file.name} is exist, please remove first`)
+        message.error(`${file.name} is exist, please remove first`)
       }
       if (!oversize) {
-        message.error(`${file.name} is too big, please remove it`)
+        message.error(`${file.name} is too big, please check the size`)
+        message.error(`${file.name} is too big, please check the size`)
       }
       return oversize && !exist
     },
@@ -47,21 +49,30 @@ const FileControl = (param: FileControlProps) => {
       const { status } = info.file
       if (status === 'done') {
         message.success(`${info.file.name} file uploaded successfully.`)
+        message.success(`${info.file.name} file uploaded successfully.`)
       } else if (status === 'error') {
+        message.error(`${info.file.name} file upload failed.`)
         message.error(`${info.file.name} file upload failed.`)
       }
       if (info.file.name != undefined) {
         console.log(info.file.status)
         if (info.file.status === 'removed') {
           param.setFileList((list) => list.filter((link) => link.name !== info.file.name))
+          return
         } else if (info.file.status === undefined) {
           info.file.status = 'error'
-        } else if (info.file.status === 'done' || info.file.status == 'success') {
-          param.setFileList([
-            ...param.fileList,
-            { name: info.file.name, time: time, uid: info.file.uid },
-          ])
+          return
         }
+        const fl:
+          | ((q: Pair[]) => Pair[])
+          | { name: string; time: number; uid: string }[] = []
+        info.fileList.map((item) => {
+          console.log(item.name)
+          if (item.name != undefined) {
+            fl.push({ name: item.name, time: time, uid: item.uid })
+          }
+        })
+        param.setFileList(fl)
       }
     },
     onDrop(e) {
