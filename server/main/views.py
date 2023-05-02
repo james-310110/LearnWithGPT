@@ -23,6 +23,7 @@ def get_data(request: HttpRequest):
         return JsonResponse(
             {"result": "error_bad_request", "data": "missing field [data]"}
         )
+    print(query_str)
     query_dict = json.loads(query_str)
     # TODO swap with session_id or user_id later
     by_whom = "test_session_key"

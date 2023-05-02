@@ -8,6 +8,8 @@ from urllib.parse import urljoin, urlparse
 from llama_index import Document, download_loader
 from llama_index.node_parser import SimpleNodeParser
 from unstructured.partition.auto import partition
+from main.youtubeWithTime import YoutubeTranscriptReader
+
 
 
 class DocumentLoader:
@@ -105,6 +107,9 @@ class DocumentLoader:
         elif is_knowledge_base:
             endpoints = self._scrape_knowledge_base(basepoint)
             documents = web_reader.load_data(urls=endpoints)
+        elif "youtube" in input_url.lower(): # youtube with timestamp
+            loader = YoutubeTranscriptReader()
+            documents = loader.load_data(ytlinks=[input_url])
         else:
             documents = web_reader.load_data(urls=[input_url])
         uid = get_document_id(input_url, by_whom, at_when)
