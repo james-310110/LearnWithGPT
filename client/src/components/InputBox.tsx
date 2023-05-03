@@ -1,5 +1,7 @@
+import { SearchOutlined, SendOutlined } from '@ant-design/icons'
 import { message, Select, Spin } from 'antd'
-import { useState } from 'react'
+import Search from 'antd/es/input/Search'
+import { useEffect, useState } from 'react'
 import { DataWrap, isDataWrap } from '../interface/DataWrap'
 import Pair from '../interface/Pair'
 import { isErrorResponse, isSuccessResponse } from '../interface/Response'
@@ -16,13 +18,10 @@ export default function InputBox(props: InputBoxProps) {
   const [textBox, setTextBox] = useState<string>('')
   const [commandHistory, setCommandHistory] = useState<string[]>([])
   const [count, setCount] = useState<number>(0)
-  const [format, setFormat] = useState<string>('paragraph')
   const [loading, setLoading] = useState(false)
 
   /**
    * Handles the submit button being clicked or the enter key being pressed!
-   * You may want to make this function more sophisticated to add real
-   * command logic, but for now it just adds the text to the history box.
    */
   function handleSubmit() {
     if (textBox.length != 0) {
@@ -33,11 +32,20 @@ export default function InputBox(props: InputBoxProps) {
       let json = JSON.stringify({
         fileList: props.fileList,
         linkList: props.linkList,
-        format: format,
+        format: 'prompt',
         prompt: textBox,
       })
       getData(json)
     }
+  }
+
+  function handleSummarize() {
+    let json = JSON.stringify({
+      fileList: props.fileList,
+      linkList: props.linkList,
+      format: 'summary',
+    })
+    getData(json)
   }
 
   /**
@@ -50,11 +58,11 @@ export default function InputBox(props: InputBoxProps) {
     console.log(json)
     if (isSuccessResponse(json)) {
       const data = { data: json.data }
+      console.log(data)
       if (isDataWrap(data)) {
         data.prompt = textBox
         props.setHistory((list) => [...list, data])
       } else {
-        message.error(`Error: cannot define return data, check with server.`)
         message.error(`Error: cannot define return data, check with server.`)
       }
     } else if (isErrorResponse(json)) {
@@ -93,48 +101,38 @@ export default function InputBox(props: InputBoxProps) {
   }
 
   return (
-    <div className="repl-input p-3 d-flex align-items-center">
-      <Spin
-        spinning={loading}
-        delay={500}
-        tip="Loading"
-        size="large"
-        className="repl-command-box"
-      >
-        <input
-          disabled={loading}
-          aria-label={'Prompt input box'}
-          placeholder="Prompt Here!"
-          type="text"
-          className="repl-command-box p-2"
-          onChange={(e) => setTextBox(e.target.value)}
-          value={textBox}
-          onKeyUp={(e) => {
-            if (e.key == 'Enter') handleSubmit()
-            if (e.keyCode == 38) up()
-            if (e.keyCode == 40) down()
-          }}
-        />
+    <div className="repl-input">
+      <Spin spinning={loading} delay={500} tip="Loading" size="large">
+        <div>
+          <button
+            className="p-2 m-3 btn btn-primary"
+            onClick={() => handleSummarize()}
+            aria-label={'Prompt button'}
+          >
+            Summarize Uploads
+          </button>
+        </div>
+        <div style={{ height: '7vh' }}>
+          <Search
+            className="search"
+            placeholder="Prompt Here!"
+            loading={loading}
+            prefix={<SearchOutlined />}
+            enterButton={<SendOutlined style={{ marginBottom: '8px' }} />}
+            size="large"
+            bordered
+            value={textBox}
+            onSearch={() => handleSubmit()}
+            onPressEnter={() => handleSubmit()}
+            onChange={(e) => setTextBox(e.target.value)}
+            onKeyUp={(e) => {
+              if (e.keyCode == 38) up()
+              if (e.keyCode == 40) down()
+            }}
+            aria-label={'Prompt input box'}
+          />
+        </div>
       </Spin>
-      <div className="d-flex flex-wrap align-content-around ms-4 align-items-start">
-        <button
-          className="repl-button p-2 m-1 btn btn-primary"
-          onClick={() => handleSubmit()}
-          aria-label={'Prompt button'}
-        >
-          Submit
-        </button>
-        <Select
-          placeholder="Format"
-          style={{ width: 100 }}
-          onChange={(e) => setFormat(e)}
-          options={[
-            { value: 'paragraph', label: 'Paragraph' },
-            { value: 'tree', label: 'Tree' },
-            { value: 'time', label: 'Timeline' },
-          ]}
-        />
-      </div>
     </div>
   )
 }

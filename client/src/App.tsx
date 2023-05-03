@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import FileControl from './components/FileControl'
 import HistoryBox from './components/HistoryBox'
 import InputBox from './components/InputBox'
-import { DataWrap } from './interface/DataWrap'
+import { DataWrap, findElementToDo } from './interface/DataWrap'
 import './style/App.css'
 import useLocalStorage from 'use-local-storage'
 import Pair from './interface/Pair'
@@ -60,6 +60,12 @@ function App() {
     window.sessionStorage.setItem('linklist', JSON.stringify(linkList))
     window.sessionStorage.setItem('history', JSON.stringify(history))
   }, [fileList, linkList, history])
+
+  useEffect(() => {
+    findElementToDo('repl-history', (div: { scrollTop: any; scrollHeight: any }) => {
+      div.scrollTop = div.scrollHeight
+    })
+  }, [history])
 
   return (
     <div className="App" data-theme={theme}>
@@ -145,7 +151,7 @@ function App() {
       </div>
       <div className="repl">
         <HistoryBox history={history}></HistoryBox>
-        <hr></hr>
+        {/* <hr></hr> */}
         <InputBox
           server={server}
           fileList={fileList}

@@ -65,11 +65,26 @@ const FileControl = (param: FileControlProps) => {
         }
         const fl:
           | ((q: Pair[]) => Pair[])
-          | { name: string; time: number; uid: string }[] = []
+          | {
+              name: string
+              time: number
+              uid: string
+              status: string
+              percent: number
+            }[] = []
         info.fileList.map((item) => {
-          console.log(item.name)
-          if (item.name != undefined) {
-            fl.push({ name: item.name, time: time, uid: item.uid })
+          if (
+            item.name != undefined &&
+            item.status != undefined &&
+            item.percent != undefined
+          ) {
+            fl.push({
+              name: item.name,
+              time: time,
+              uid: item.uid,
+              status: item.status,
+              percent: item.status == 'uploading' ? 80 : 100,
+            })
           }
         })
         param.setFileList(fl)

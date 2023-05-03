@@ -18,6 +18,7 @@ code {
   --text-secondary: royalblue;
   --accent: purple;
   --listitem: #efdbff;
+  --inputB: #a2a2be;
 }
 [data-theme='dark'] {
   --bimage: url(https://www.toptal.com/designers/subtlepatterns/uploads/darkness.png);
@@ -27,4 +28,5 @@ code {
   --text-secondary: grey;
   --accent: darkred;
   --listitem: #3f224a;
+  --inputB: #4a4a64;
 }

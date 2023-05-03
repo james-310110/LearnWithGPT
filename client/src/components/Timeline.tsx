@@ -29,7 +29,7 @@ export default function VideoTime(props: timePorps) {
         width="700"
         height="400"
         style={{ alignItems: 'Center' }}
-        src={`https://www.youtube.com/embed/${props.data.id}?autoplay=1&mute=1&start=${start}`}
+        src={`https://www.youtube.com/embed/${props.data.id}?autoplay=0&mute=1&start=${start}`}
       ></iframe>
       <Timeline mode={'left'} items={items} />
     </>
@@ -37,10 +37,9 @@ export default function VideoTime(props: timePorps) {
 }
 
 function convert(time: string): number {
-  console.log(time)
   var a = time.split(':') // split it at the colons
 
   // minutes are worth 60 seconds. Hours are worth 60 minutes.
-  var seconds = +a[0] * 60 * 60 + +a[1] * 60 + +a[2]
+  var seconds = +a[0] * 60 + +a[1]
   return seconds
 }

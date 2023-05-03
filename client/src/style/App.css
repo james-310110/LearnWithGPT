@@ -73,7 +73,9 @@
 
 .repl-input {
   margin: auto;
-  min-height: 15vh;
+  min-height: 12vh;
+  width: 80%;
+  background-color: var(--inputB);
 }
 
 .navbar {
@@ -82,7 +84,7 @@
 
 .repl-command-box {
   width: 75vw;
-  height: 80px;
+  height: 100px;
   margin-left: 1%;
   display: block;
   /* width: calc(85vw - 0px); */
@@ -109,13 +111,25 @@ a {
   font-family: 'Raleway';
 }
 
+.search {
+  font: 20px/3 sans-serif;
+  width: 95%;
+}
+
+.search::placeholder {
+  color: var(--text-primary);
+  font: 20px/3 sans-serif;
+  background-color: aqua;
+}
+
 input,
 input::placeholder {
-  font: 30px/3 sans-serif;
+  font: 20px/3 sans-serif;
+  color: var(--text-primary);
 }
 
 input[type='text'] {
-  font-size: 30px;
+  font-size: 20px;
   background-color: var(--background);
   color: var(--text-primary);
 }
@@ -162,6 +176,6 @@ input[type='text'] {
     width: 50vw;
   }
   .repl-history {
-    height: 50vh;
+    height: 60vh;
   }
 }
