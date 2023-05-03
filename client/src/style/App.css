@@ -149,11 +149,16 @@ input[type='text'] {
 .ant-list-item-meta-content {
   align-items: left;
   text-align: left;
+  padding-left: 0;
 }
 
 .ant-timeline-label {
   text-align: left;
   align-items: left;
+}
+
+.timeline {
+  width: 70%;
 }
 
 @media (max-width: 1800px) {

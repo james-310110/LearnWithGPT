@@ -26,12 +26,14 @@ export default function VideoTime(props: timePorps) {
   return (
     <>
       <iframe
-        width="700"
+        width="60%"
         height="400"
         style={{ alignItems: 'Center' }}
         src={`https://www.youtube.com/embed/${props.data.id}?autoplay=0&mute=1&start=${start}`}
       ></iframe>
-      <Timeline mode={'left'} items={items} />
+      <div className="timeline">
+        <Timeline mode={'left'} items={items} />
+      </div>
     </>
   )
 }

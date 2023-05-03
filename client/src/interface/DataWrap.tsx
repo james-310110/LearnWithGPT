@@ -3,6 +3,10 @@ export interface DataWrap {
   prompt: string
 }
 
+export interface video {
+  video: time[]
+}
+
 export interface time {
   id: string
   timeline: pair[]
