@@ -4,6 +4,7 @@ from main.services import DocumentLoader
 from main.utils import *
 import json
 import os
+import json
 
 # loading openai api key from json file beforeAll
 with open("keys_and_tokens.json", "r") as f:
@@ -30,10 +31,16 @@ def get_data(request: HttpRequest):
     # by_whom = request.session.session_key
     file_list = query_dict["fileList"]
     web_list = query_dict["linkList"]
-    question = query_dict["prompt"]
     format = query_dict["format"]
+    question = ""
+    if format != "summary":
+        question = query_dict["prompt"]
+    print(web_list)
+    if format == "summary" and len(web_list) == 1 and "youtube" in web_list[0]["name"]:
+        question = """summarize this video with timestamp and make it more concise,generate a json-formatted,json format is {"id": "youtubeid","timeline": [{"time": "00:10","text": "balabala"},{"time": "00:20","text": "balabala"}]}"""
     if format == "paragraph":
         question = "generate a markdown-formatted answer for this question: " + question
+    print(question)
     uids = []
     # check if each file matches nodes from db
     for file_item in file_list:
@@ -59,12 +66,17 @@ def get_data(request: HttpRequest):
         print("setting index from nodes")
         set_index(index_id, nodes)
     index = get_index(index_id)
+    print(f"question: {question}")
     answer = index.query(question, mode="default")
     print(f"question: {question}, answer: {answer}")
     response = {}
     response["result"] = "success"
     response["data"] = {}
-    response["data"]["markdown"] = answer.response
+    if format == "summary" and len(web_list) == 1 and "youtube" in web_list[0]["name"]:
+        print("answer.response:", answer.response)
+        response["data"] = json.loads( answer.response.replace("\n","") )
+    else:
+        response["data"]["markdown"] = answer.response
     print(response)
     return JsonResponse(response)
 
