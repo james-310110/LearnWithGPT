@@ -55,7 +55,7 @@ class YoutubeTranscriptReader(BaseReader):
                 fen = total_miao//60
                 miao = total_miao % 60
                 timeAndTextDictArr.append({"time": f"{fen:0>2d}:{miao:0>2d}","text":chunk["text"]})
-            docDict["time"] = timeAndTextDictArr
+            docDict["timeline"] = timeAndTextDictArr
             transcript = str(docDict)
             results.append(Document(transcript))
         return results
