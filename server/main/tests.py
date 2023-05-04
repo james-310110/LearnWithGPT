@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.contrib.sessions.backends.db import SessionStore
-from main.models import DocumentModel, CollectionModel
+# from main.models import DocumentModel, CollectionModel
 from main.utils import *
 
 import json

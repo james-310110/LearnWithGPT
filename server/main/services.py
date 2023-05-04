@@ -3,13 +3,12 @@ import requests
 from collections import deque
 from bs4 import BeautifulSoup
 from main.utils import get_document_id
-from main.models import DocumentModel
+from main.models import DocumentModel, IndexModel
 from urllib.parse import urljoin, urlparse
 from llama_index import Document, download_loader
 from llama_index.node_parser import SimpleNodeParser
 from unstructured.partition.auto import partition
 from main.youtubeWithTime import YoutubeTranscriptReader
-
 
 
 class DocumentLoader:
@@ -71,10 +70,12 @@ class DocumentLoader:
         elements = partition(file=input_file)
         text_chunks = [" ".join(str(el).split()) for el in elements]
         documents = [Document("\n\n".join(text_chunks), extra_info=None)]
-        # generating uid
-        uid = get_document_id(file_name, by_whom, at_when)
+        # generating doc_id
+        doc_id = get_document_id(file_name, by_whom, at_when)
         # saving documents as nodes to db
-        self._save_document_as_nodes_to_db(uid, documents)
+        # self._save_document_as_nodes_to_db(doc_id, documents)
+        # saving documents as index to db
+        self._save_document_as_index_to_db(doc_id, documents)
 
     def load_web(
         self,
@@ -97,23 +98,30 @@ class DocumentLoader:
         parsed_url = urlparse(input_url)
         basepoint = parsed_url.netloc
         web_extractor = self.web_extractors.get(basepoint, self.simple_web_extractor)
-        web_reader = download_loader(web_extractor)
-        if web_extractor == "docs.google.com":
-            gdoc_ids = [parsed_url.path.split("/")[3]]
-            documents = web_reader.load_data(document_ids=gdoc_ids)
-        elif web_extractor == "drive.google.com":
-            gfolder_id = parsed_url.path.split("/")[3]
-            documents = web_reader.load_data(folder_id=gfolder_id)
+        web_loader = download_loader(web_extractor)
+        web_reader = web_loader()
+        print(web_extractor)
+        # google suite reader disabled as user credentials are needed to authorize visits
+        # if web_extractor == "GoogleDocsReader":
+        #     gdoc_ids = [parsed_url.path.split("/")[3]]
+        #     documents = web_reader.load_data(document_ids=gdoc_ids)
+        # elif web_extractor == "GoogleDriveReader":
+        #     gfolder_id = parsed_url.path.split("/")[3]
+        #     documents = web_reader.load_data(folder_id=gfolder_id)
+        if web_extractor == "YoutubeTranscriptReader":  # youtube with timestamp
+            documents = web_reader.load_data(ytlinks=[input_url])
+            # loader = YoutubeTranscriptReader()
+            # documents = loader.load_data(ytlinks=[input_url])
+        elif web_extractor == "BilibiliTranscriptReader":
+            documents = web_reader.load_data(video_urls=[input_url])
         elif is_knowledge_base:
             endpoints = self._scrape_knowledge_base(basepoint)
             documents = web_reader.load_data(urls=endpoints)
-        elif "youtube" in input_url.lower(): # youtube with timestamp
-            loader = YoutubeTranscriptReader()
-            documents = loader.load_data(ytlinks=[input_url])
         else:
             documents = web_reader.load_data(urls=[input_url])
-        uid = get_document_id(input_url, by_whom, at_when)
-        self._save_document_as_nodes_to_db(uid, documents)
+        doc_id = get_document_id(input_url, by_whom, at_when)
+        # self._save_document_as_nodes_to_db(doc_id, documents)
+        self._save_document_as_index_to_db(doc_id, documents)
 
     def _scrape_knowledge_base(self, basepoint) -> List[str]:
         endpoints = []
@@ -139,13 +147,21 @@ class DocumentLoader:
                 endpoints.append(absolute_href)
         return endpoints
 
-    def _save_document_as_nodes_to_db(self, uid, documents):
+    def _save_document_as_nodes_to_db(self, doc_id, documents):
         # setting node parser
         parser = SimpleNodeParser()
         # getting nodes from documents
         nodes = parser.get_nodes_from_documents(documents)
         # saving nodes to db
-        DocumentModel.set_nodes(uid=uid, nodes=nodes)
+        DocumentModel.set_nodes(uid=doc_id, nodes=nodes)
+
+    def _save_document_as_index_to_db(self, doc_id, documents):
+        # setting node parser
+        parser = SimpleNodeParser()
+        # getting nodes from documents
+        nodes = parser.get_nodes_from_documents(documents)
+        # saving nodes to db
+        IndexModel.set_index(uid=doc_id, nodes=nodes)
 
 
 class EmbeddingService:

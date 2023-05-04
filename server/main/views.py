@@ -1,6 +1,15 @@
+from collections import defaultdict
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from main.services import DocumentLoader
+from langchain.chains import load_chain
+from langchain import OpenAI
+from langchain.llms import OpenAIChat
+from langchain.agents import Tool, initialize_agent
+from langchain.chains.conversation.memory import ConversationBufferMemory
+
+from llama_index import GPTListIndex
+from llama_index.langchain_helpers.memory_wrapper import GPTIndexChatMemory
 from main.utils import *
 import json
 import os
@@ -17,6 +26,25 @@ with open("keys_and_tokens.json", "r") as f:
 
 doc_loader = DocumentLoader()
 
+# TODO should be stored and loaded from db
+collections = defaultdict(object)
+
+# memory_index = GPTIndexChatMemory(
+#     index=GPTListIndex([]),
+#     memory_key="chat_history",
+#     query_kwargs={"response_mode": "compact"},
+#     return_source=True,
+#     return_messages=True,
+# )
+# agent_chain = initialize_agent(
+#     tools=[],
+#     llm=OpenAIChat(temperature=0),
+#     agent="conversational-react-description",
+#     memory=memory_index,
+# )
+
+agent_chain = get_chain_from_documents([])
+
 
 def get_data(request: HttpRequest):
     query_str = request.GET.get("data")
@@ -31,60 +59,79 @@ def get_data(request: HttpRequest):
     # by_whom = request.session.session_key
     file_list = query_dict["fileList"]
     web_list = query_dict["linkList"]
-    format = query_dict["format"]
+    answer_format = query_dict["format"]
     question = ""
-    if format != "summary":
+    if answer_format != "summary":
         question = query_dict["prompt"]
     print(web_list)
-    if format == "summary" and len(web_list) == 1 and "youtube" in web_list[0]["name"]:
-        question = """summarize this video with timestamp and make it more concise,generate a json-formatted,json format is {"id": "youtubeid","timeline": [{"time": "00:10","text": "balabala"},{"time": "00:20","text": "balabala"}]}"""
-    if format == "paragraph":
-        question = "generate a markdown-formatted answer for this question: " + question
-    print(question)
-    uids = []
+    
+    doc_ids = []
     # check if each file matches nodes from db
     for file_item in file_list:
         file_name = file_item["name"]
         at_when = str(file_item["time"])
-        uid = get_document_id(file_name, by_whom, at_when)
-        if not has_nodes(uid):
+        doc_id = get_document_id(file_name, by_whom, at_when)
+        if not has_index(doc_id):
             print("file not exist")
             continue
-        uids.append(uid)
+        doc_ids.append(doc_id)
     # check if each url matches nodes from db
     for web_item in web_list:
         web_url = web_item["name"]
         at_when = str(web_item["time"])
-        uid = get_document_id(web_url, by_whom, at_when)
-        if not has_nodes(uid):
+        doc_id = get_document_id(web_url, by_whom, at_when)
+        if not has_index(doc_id):
             doc_loader.load_web(web_url, by_whom, at_when)
-        uids.append(uid)
-    index_id = get_collection_id(uids)
-    # check if collection matching all nodes from request exists in db
-    if not has_index(index_id):
-        nodes = [node for uid in uids for node in get_nodes(uid)]
-        print("setting index from nodes")
-        set_index(index_id, nodes)
-    index = get_index(index_id)
-    print(f"question: {question}")
-    answer = index.query(question, mode="default")
+        doc_ids.append(doc_id)
+    colxn_id = get_collection_id(doc_ids)
+    # setting/getting agent_chain to query 
+    if colxn_id in collections.keys():
+        print("collection already exists")
+        agent_chain = collections.get(colxn_id)
+    else:
+        print("collection not exists")
+        agent_chain = get_chain_from_documents(doc_ids)
+        collections[colxn_id] = agent_chain
+    if (
+        answer_format == "summary"
+        and len(web_list) == 1
+        and "youtube" in web_list[0]["name"]
+    ):
+        question = """summarize this video with timestamp and make it more concise,generate a json-formatted,json format is {"id": "youtubeid","timeline": [{"time": "00:10","text": "balabala"},{"time": "00:20","text": "balabala"}]}"""
+    if answer_format == "paragraph":
+        question = "generate a markdown-formatted answer for this question: " + question
+        print(question)
+        
+    # querying answer from agent_chain
+    answer = agent_chain.run(input=question)
+    # answer = index.query(question, mode="default")
     print(f"question: {question}, answer: {answer}")
     response = {}
     response["result"] = "success"
     response["data"] = {}
-    if format == "summary" and len(web_list) == 1 and "youtube" in web_list[0]["name"]:
-        print("answer.response:", answer.response)
-        response["data"] = json.loads( answer.response.replace("\n","") )
+    
+    if (
+        answer_format == "summary"
+        and len(web_list) == 1
+        and "youtube" in web_list[0]["name"]
+    ):
+        print("answer.response:", answer)
+        response["data"] = json.loads(answer.replace("\n", ""))
     else:
-        response["data"]["markdown"] = answer.response
+        response["data"]["markdown"] = answer
     print(response)
+
     return JsonResponse(response)
 
 
 def post_data(request: HttpRequest):
     input_file = request.FILES.get("file")
     # TODO swap with session_id or user_id later
-    by_whom = "test_session_key" if request.session.session_key is None else request.session.session_key
+    by_whom = (
+        "test_session_key"
+        if request.session.session_key is None
+        else request.session.session_key
+    )
     # by_whom = request.session.session_key
     at_when = request.GET.get("upload_time")
     if input_file is None:

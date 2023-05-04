@@ -11,6 +11,7 @@ from llama_index import (
 from langchain import OpenAI
 
 
+# deprecated
 class DocumentModel(models.Model):
     uid = models.CharField(primary_key=True, max_length=256)
     # not sure to use JSONField or TextField for json string
@@ -35,11 +36,9 @@ class DocumentModel(models.Model):
         return cls.objects.filter(uid=uid).exists()
 
 
-class CollectionModel(models.Model):
+class IndexModel(models.Model):
     uid = models.CharField(primary_key=True, max_length=256)
-    # not sure to use JSONField or TextField for json string
-    index = models.TextField()
-    # memory =
+    content = models.TextField()
 
     @classmethod
     def set_index(cls, uid, nodes):
@@ -48,7 +47,6 @@ class CollectionModel(models.Model):
         llm_predictor = LLMPredictor(
             llm=OpenAI(temperature=0, model_name="text-davinci-003")
         )
-
         max_input_size = 4096
         num_output = 2048
         max_chunk_overlap = 20
@@ -56,28 +54,50 @@ class CollectionModel(models.Model):
         service_context = ServiceContext.from_defaults(
             llm_predictor=llm_predictor, prompt_helper=prompt_helper
         )
-        print("generated service context")
-        collection = cls(
+        index = cls(
             uid,
             GPTSimpleVectorIndex(
                 nodes, service_context=service_context
             ).save_to_string(),
         )
-        print("generated index")
-        collection.save()
-        print("saved index")
+        index.save()
 
     @classmethod
     def get_index(cls, uid):
-        print("getting index")
-        collection = cls.objects.get(uid=uid)
-        print("got index")
-        return GPTSimpleVectorIndex.load_from_string(collection.index)
+        index = cls.objects.get(uid=uid)
+        return GPTSimpleVectorIndex.load_from_string(index.content)
 
     @classmethod
     def has_index(cls, uid):
-        print("finding")
         return cls.objects.filter(uid=uid).exists()
+
+
+# deprecated
+# class CollectionModel(models.Model):
+#     colxn_id = models.CharField(primary_key=True, max_length=256)
+#     # not sure to use JSONField or TextField for json string
+#     # doc_ids = models.ArrayField(models.CharField(max_length=256))
+
+#     @classmethod
+#     def set_collection(cls, colxn_id, doc_ids):
+#         collection = cls(
+#             colxn_id,
+#             doc_ids,
+#         )
+#         print("generated index")
+#         collection.save()
+#         print("saved index")
+
+#     # @classmethod
+#     # def get_doc_ids(cls, colxn_id):
+#     #     print("getting index")
+#     #     collection = cls.objects.get(uid=uid)
+#     #     print("got index")
+#     #     return GPTSimpleVectorIndex.load_from_string(collection.index)
+
+#     @classmethod
+#     def has_collection(cls, colxn_id):
+#         return cls.objects.filter(colxn_id=colxn_id).exists()
 
 
 # class CollectionModel(models.Model):
