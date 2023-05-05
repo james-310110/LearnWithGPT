@@ -104,6 +104,11 @@
   color: var(--text-primary);
 }
 
+.listTitle {
+  text-indent: 0em;
+  color: brown;
+}
+
 a {
   font-family: 'Raleway';
 }

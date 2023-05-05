@@ -1,10 +1,11 @@
 export interface DataWrap {
-  data: time | markdown
   prompt: string
+  data: DataElement[]
 }
 
-export interface video {
-  video: time[]
+export interface DataElement {
+  title: string
+  data: time | markdown
 }
 
 export interface time {
@@ -23,6 +24,15 @@ export interface markdown {
 
 export function isDataWrap(rjson: any): rjson is DataWrap {
   if (!('data' in rjson)) return false
+  if (Array.isArray(rjson.data)) {
+    const list = rjson.data
+    return list.every((it: any) => isDataElement(it))
+  }
+  return true
+}
+
+export function isDataElement(rjson: any): rjson is DataElement {
+  if (!('title' in rjson)) return false
   if (!(isMarkdown(rjson.data) || isTime(rjson.data))) return false
   return true
 }

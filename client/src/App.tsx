@@ -62,6 +62,7 @@ function App() {
   }, [fileList, linkList, history])
 
   useEffect(() => {
+    console.log(history)
     findElementToDo('repl-history', (div: { scrollTop: any; scrollHeight: any }) => {
       div.scrollTop = div.scrollHeight
     })

@@ -1,7 +1,7 @@
 import { SearchOutlined, SendOutlined } from '@ant-design/icons'
 import { message, Select, Spin } from 'antd'
 import Search from 'antd/es/input/Search'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { DataWrap, isDataWrap } from '../interface/DataWrap'
 import Pair from '../interface/Pair'
 import { isErrorResponse, isSuccessResponse } from '../interface/Response'
@@ -55,12 +55,13 @@ export default function InputBox(props: InputBoxProps) {
     setLoading(true)
     const data = await getResponse(`${props.server}getdata?data=${args}`)
     const json = await data.json()
-    console.log(json)
+    console.log(json) // TODO
     if (isSuccessResponse(json)) {
       const data = { data: json.data }
-      console.log(data)
+      console.log(data) // TODO
       if (isDataWrap(data)) {
-        data.prompt = textBox
+        if (textBox.length == 0) data.prompt = 'Summary'
+        else data.prompt = textBox
         props.setHistory((list) => [...list, data])
       } else {
         message.error(`Error: cannot define return data, check with server.`)
