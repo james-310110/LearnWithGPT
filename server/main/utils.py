@@ -62,7 +62,8 @@ def get_chain_from_documents(doc_ids):
         index = get_index(doc_id)
         tool = Tool(
             name="GPT Index",
-            func=lambda q: str(index.as_query_engine().query(q)),
+            # func=lambda q: str(index.as_query_engine().query(q)),
+            func=lambda q: str(index.query(q)),
             description=str(
                 index.query(
                     "summarize the document in 50 words and begin your answer with 'useful for ...'"

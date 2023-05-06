@@ -1,0 +1,158 @@
+request:
+{
+  "fileList": [],
+  "linkList": [
+    {
+      "name": "https://www.youtube.com/watch?v=gd5spdd0Y1s",
+      "time": 1683380568033,
+      "uid": "none"
+    }
+  ],
+  "format": "summary"
+}
+
+response:
+{
+  "data": [
+    {
+      "type": "video_json",
+      "title": "https://www.youtube.com/watch?v=gd5spdd0Y1s",
+      "data": {
+        "id": "youtubeid",
+        "timeline": [
+          {
+            "time": "00:00",
+            "text": "This is the only ice cream recipe you'll ever need. It's silky, rich, and not too sweet. You can make it into any flavor you want - chocolate, vanilla, caramel, goat cheese cherry, raspberry ripple, fudge, homemade mint ice cream, rocky road, or any other flavor you like! Heat the cream and sugar until the sugar dissolves, then add egg yolks and heat until thick. Strain and cool. For strawberry ice cream, puree strawberries, sugar, lemon juice, and a pinch of salt. Churn in an ice cream maker, then freeze in a container. Enjoy homemade ice cream!"
+          }
+        ]
+      }
+    }
+  ],
+  "result": "success"
+}
+
+
+request:
+{
+  "fileList": [],
+  "linkList": [
+    {
+      "name": "https://www.youtube.com/watch?v=gd5spdd0Y1s",
+      "time": 1683380568033,
+      "uid": "none"
+    },
+    {
+      "name": "https://www.youtube.com/watch?v=ABfDv9OJuCI",
+      "time": 1683380898567,
+      "uid": "none"
+    }
+  ],
+  "format": "summary"
+}
+response:
+{
+  "data": [
+    {
+      "type": "markdown",
+      "title": "web_link_summary",
+      "data": "After analyzing all the videos, the top three ideas that emerged were: 1) the importance of collaboration and communication in achieving success; 2) the need to be creative and think outside the box; and 3) the importance of taking risks and learning from failure. \n\nThese ideas can be further explored by posing the following questions: \n1) What strategies can be used to foster collaboration and communication? \n2) How can creativity be encouraged and nurtured? \n3) What are the benefits of taking risks and learning from failure? \n\nBy exploring these questions, we can gain a better understanding of the themes presented in the videos and how they can be applied to our own lives."
+    },
+    {
+      "type": "markdown",
+      "title": "https://www.youtube.com/watch?v=gd5spdd0Y1s",
+      "data": "This video provides a step-by-step guide to making a custard-based ice cream base. It explains how to make the custard, add flavorings, and churn the ice cream in an ice cream maker. The recipe is versatile and can be used to make any flavor of ice cream. The video also provides tips on how to make the ice cream as rich and creamy as possible. The JSON-formatted result is: {\"id\": \"youtubeid\",\"timeline\": [{\"time\": \"00:00\",\"text\": \"This is the only ice cream recipe you'll ever need. It's silky, rich, and not too sweet. You can make it into any flavor you want - chocolate, vanilla, caramel, goat cheese cherry, raspberry ripple, fudge, homemade mint ice cream, rocky road, or any other flavor you like!\"}]}"
+    },
+    {
+      "type": "markdown",
+      "title": "https://www.youtube.com/watch?v=ABfDv9OJuCI",
+      "data": "\n{\"id\": \"youtubeid\",\"timeline\": [{\"time\": \"00:00\",\"text\": \"The video introduces how to make French crepes. Allrecipes member Steffi suggests adding fresh fruit for breakfast or a protein-filled scrambled egg and ham mixture for dinner. Sprinkling sugar on one is a treat as well.\"},{\"time\": \"00:30\",\"text\": \"To get started, sift 1 cup of flour, 1 teaspoon of sugar, and a quarter teaspoon of salt into a medium bowl. Beat three eggs and two cups of milk together, and gradually add the flour mixture. Add two tablespoons of melted butter and mix until blended. Heat a crepe pan or a nonstick skillet over medium-high heat and lightly grease it with butter. Pour 2 tablespoons of batter onto the pan, tipping and rotating the pan to spread the batter out as thinly as possible. Let the crepe cook for about 2 minutes, then flip and cook for another 30 seconds. Continue cooking until golden brown on both sides.\"},{\"time\": \"01:00\",\"text\": \"Allrecipes members offer lots of creative suggestions for filling the crepes, such as raspberries, bananas, powdered sugar, mint, chocolate hazelnut spread,"
+    }
+  ],
+  "result": "success"
+}
+
+
+{
+  "data": [
+    {
+      "type": "markdown",
+      "title": "web_link_summary",
+      "data": "After analyzing the videos, the top three ideas that emerged were: 1) the importance of collaboration and communication in achieving success; 2) the need to be creative and think outside the box; and 3) the importance of taking risks and learning from failure. \n\nThese ideas can be further explored by posing the following questions: \n1) How can collaboration and communication help teams achieve success? \n2) What are some creative ways to approach a problem? \n3) How can taking risks and learning from failure help individuals and teams grow? \n\nBy exploring these questions, teams can gain a better understanding of the themes presented in the videos and how they can be applied to their own work. This can help them to become more successful and productive in their endeavors."
+    },
+    {
+      "type": "video_json",
+      "title": "https://www.youtube.com/watch?v=gd5spdd0Y1s",
+      "data": {
+        "id": "gd5spdd0Y1s",
+        "timeline": [
+          {
+            "time": "00:00",
+            "text": "This is the only ice cream recipe you'll ever need. It's silky, rich, and not too sweet. You can make it into any flavor you want. Heat the cream and sugar until the sugar dissolves, then add egg yolks and heat until thick. Strain and cool. Add flavorings to taste, such as chocolate, vanilla, caramel, goat cheese cherry, raspberry ripple, fudge, homemade mint ice cream, rocky road, etc. Churn in an ice cream maker, then freeze in a container. Enjoy your homemade ice cream!"
+          },
+          {
+            "time": "03:06",
+            "text": "[Music]"
+          },
+          {
+            "time": "08:72",
+            "text": "As long as you start with a good base, it's going to be delicious. Add flavorings to taste. Churn in an ice cream maker, then freeze in a container. Enjoy your homemade ice cream!"
+          }
+        ]
+      }
+    },
+    {
+      "type": "video_json",
+      "title": "https://www.youtube.com/watch?v=FSCVgmLjjQI",
+      "data": {
+        "id": "FSCVgmLjjQI",
+        "timeline": [
+          {
+            "time": "00:00",
+            "text": "When you're in the mood for something sweet and you're looking for something on the lighter side, this peanut butter banana smoothie is for you. It's naturally sweetened with fruit and it reminds me of a milkshake, but it's completely dairy-free and it will leave you feeling satisfied for hours."
+          },
+          {
+            "time": "00:30",
+            "text": "To make the smoothie, you'll need a 1/2 cup of milk or water, 1 frozen banana, 2 tablespoons of all-natural peanut butter, 1 tablespoon of ground flax seeds, a 1/2 teaspoon of vanilla extract, and a sweetener if desired. Blend everything together and serve right away for the best taste and texture."
+          },
+          {
+            "time": "00:50",
+            "text": "This smoothie really tastes like a healthy dessert, so it's a great way to satisfy your sweet tooth. If you have any leftovers, you can pour the smoothie into an ice pop mold and freeze it overnight for a cold treat later."
+          }
+        ]
+      }
+    }
+  ],
+  "result": "success"
+}
+
+
+
+request:
+{
+  "fileList": [
+    {
+      "name": "oatmealpancake.pdf",
+      "time": 1683384047388,
+      "uid": "rc-upload-1683383089955-2",
+      "status": "done",
+      "percent": 100
+    },
+    {
+      "name": "smoothie.docx",
+      "time": 1683384047388,
+      "uid": "rc-upload-1683383988402-2",
+      "status": "done",
+      "percent": 100
+    }
+  ],
+  "linkList": [],
+  "format": "prompt",
+  "prompt": "what is it?"
+}
+response:
+{
+  "result": "success",
+  "data": {
+    "markdown": "Assistant is a large language model trained by OpenAI. It is designed to be able to assist with a wide range of tasks, from answering simple questions to providing in-depth explanations and discussions on a wide range of topics."
+  }
+}

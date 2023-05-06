@@ -2,6 +2,7 @@ from collections import defaultdict
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from main.services import DocumentLoader
+from main.summary import summary_helper
 from langchain.chains import load_chain
 from langchain import OpenAI
 from langchain.llms import OpenAIChat
@@ -47,6 +48,43 @@ agent_chain = get_chain_from_documents([])
 
 
 def get_data(request: HttpRequest):
+    # response = {
+    #     "result":"success",
+    #   "data":
+    #     [
+    #         {
+    #               "title": "web_link_summary",
+    #               "data":{
+    #                    "markdown": "aaaaaaaaaa"
+    #               }
+    #          },
+    #         {
+    #             "type": "video_json",
+    #             "title": "https://www.youtube.com/watch?v=FSCVgmLjjQI",
+    #             "data": {
+    #                 "id": "FSCVgmLjjQI",
+    #                 "timeline": [
+    #                     {
+    #                         "time": "00:00",
+    #                         "text": "When you're in the mood for something sweet and you're looking for something on the lighter side, this peanut butter banana smoothie is for you. It's naturally sweetened with fruit and it reminds me of a milkshake, but it's completely dairy-free and it will leave you feeling satisfied for hours."
+    #                     },
+    #                     {
+    #                         "time": "00:30",
+    #                         "text": "To make the smoothie, you'll need a 1/2 cup of milk or water, 1 frozen banana, 2 tablespoons of all-natural peanut butter, 1 tablespoon of ground flax seeds, a 1/2 teaspoon of vanilla extract, and a sweetener if desired. Blend everything together and serve right away for the best taste and texture."
+    #                     },
+    #                     {
+    #                         "time": "00:50",
+    #                         "text": "This smoothie really tastes like a healthy dessert, so it's a great way to satisfy your sweet tooth. If you have any leftovers, you can pour the smoothie into an ice pop mold and freeze it overnight for a cold treat later."
+    #                     }
+    #                 ]
+    #             }
+    #         }
+    #     ]
+    #
+    # }
+    # return JsonResponse(response)
+
+
     query_str = request.GET.get("data")
     if query_str is None:
         return JsonResponse(
@@ -60,15 +98,16 @@ def get_data(request: HttpRequest):
     file_list = query_dict["fileList"]
     web_list = query_dict["linkList"]
     answer_format = query_dict["format"]
-    question = ""
-    if answer_format != "summary":
-        question = query_dict["prompt"]
-    print(web_list)
-    
+    if answer_format == "summary":
+        response = summary_helper(web_list,file_list, collections, by_whom)
+        return JsonResponse(response)
+    title = ""
+    question = query_dict["prompt"]
     doc_ids = []
     # check if each file matches nodes from db
     for file_item in file_list:
         file_name = file_item["name"]
+        title += "\n"+file_name
         at_when = str(file_item["time"])
         doc_id = get_document_id(file_name, by_whom, at_when)
         if not has_index(doc_id):
@@ -78,6 +117,7 @@ def get_data(request: HttpRequest):
     # check if each url matches nodes from db
     for web_item in web_list:
         web_url = web_item["name"]
+        title += "\n"+web_url
         at_when = str(web_item["time"])
         doc_id = get_document_id(web_url, by_whom, at_when)
         if not has_index(doc_id):
@@ -92,33 +132,22 @@ def get_data(request: HttpRequest):
         print("collection not exists")
         agent_chain = get_chain_from_documents(doc_ids)
         collections[colxn_id] = agent_chain
-    if (
-        answer_format == "summary"
-        and len(web_list) == 1
-        and "youtube" in web_list[0]["name"]
-    ):
-        question = """summarize this video with timestamp and make it more concise,generate a json-formatted,json format is {"id": "youtubeid","timeline": [{"time": "00:10","text": "balabala"},{"time": "00:20","text": "balabala"}]}"""
     if answer_format == "paragraph":
         question = "generate a markdown-formatted answer for this question: " + question
         print(question)
-        
+    print("question:",question)
     # querying answer from agent_chain
     answer = agent_chain.run(input=question)
     # answer = index.query(question, mode="default")
     print(f"question: {question}, answer: {answer}")
     response = {}
     response["result"] = "success"
-    response["data"] = {}
-    
-    if (
-        answer_format == "summary"
-        and len(web_list) == 1
-        and "youtube" in web_list[0]["name"]
-    ):
-        print("answer.response:", answer)
-        response["data"] = json.loads(answer.replace("\n", ""))
-    else:
-        response["data"]["markdown"] = answer
+    response["data"] = [
+        {
+            "data":{"markdown":answer},
+            "title":title
+        }
+    ]
     print(response)
 
     return JsonResponse(response)
