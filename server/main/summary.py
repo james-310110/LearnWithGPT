@@ -71,20 +71,20 @@ def _build_json_result(title,str_data):
 
 # web_list is not empty and file_list is not empty
 def summary_youtube_links_and_files(web_list,file_list,collections,by_whom):
-    question = """Response from “Based on all videos, analyze videos , compare themes, identify top 3 ideas, pose 3 questions. Generate markdown-formatted answer within 150 words."""
+    question = "Generate summary of each documents and videos in markdown-formatted. Each paragraph is within 100 words."
     title = "all"
     data = _ask_gpt(question,web_list,file_list,collections,by_whom)
     return _build_markdown_result(title,data)
 
 def summary_files(file_list,collections,by_whom):
-    question = """Response from “Based on all videos, analyze videos , compare themes, identify top 3 ideas, pose 3 questions. Generate markdown-formatted answer within 150 words."""
+    question = "Based on everything you learned, analyze files, compare themes, identify top 3 ideas, pose 3 questions. Generate markdown-formatted answer within 150 words."
     title = "file_list_summary"
     web_list = []
     data = _ask_gpt(question,web_list,file_list,collections,by_whom)
     return _build_markdown_result(title,data)
 
 def summary_youtube_links(web_list,collections,by_whom):
-    question = """Response from “Based on all videos, analyze videos , compare themes, identify top 3 ideas, pose 3 questions. Generate markdown-formatted answer within 150 words."""
+    question = "Based on everything you learned, analyze video transcripts, compare themes, identify top 3 ideas, pose 3 questions. Generate markdown-formatted answer within 150 words."
     title = "web_link_summary"
     file_list = []
     data = _ask_gpt(question, web_list, file_list, collections, by_whom)
@@ -101,7 +101,7 @@ def summary_youtube_link(web_item,collections,by_whom):
 
 # {"name":"proj3 (1).pdf","time":1683211747954,"uid":"rc-upload-1683209876401-2","status":"done","percent":100}
 def summary_file(file_item,collections,by_whom):
-    question = """Response from “based on file titile “[]”, summarize content and generate markdown-formatted answer within 150 words.”"""
+    question = "Based on files, summarize content and generate markdown-formatted answer within 150 words and propose 2 follow-up questions."
     title = file_item["name"]
     file_list = [file_item]
     web_list = []
