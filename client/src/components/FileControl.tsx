@@ -140,7 +140,7 @@ const FileControl = (param: FileControlProps) => {
           }}
         ></input>
         <button
-          aria-label={'Submit button'}
+          aria-label={'Add Link'}
           className="btn btn-success mt-2 mb-2"
           onClick={() => handleAddLink()}
         >
@@ -170,7 +170,7 @@ const FileControl = (param: FileControlProps) => {
             <InboxOutlined />
           </p>
           <p className="ant-upload-text">Click or drag file to this area to upload</p>
-          <p className="ant-upload-hint">Only PDF and TXT support</p>
+          <p className="ant-upload-hint">Support all type of file!</p>
         </Dragger>
       </div>
     </div>

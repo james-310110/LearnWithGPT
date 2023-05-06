@@ -108,7 +108,7 @@ export default function InputBox(props: InputBoxProps) {
           <button
             className="p-2 m-3 btn btn-primary"
             onClick={() => handleSummarize()}
-            aria-label={'Prompt button'}
+            aria-label={'Summarize button'}
           >
             Summarize Uploads
           </button>

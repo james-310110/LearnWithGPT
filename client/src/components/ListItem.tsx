@@ -13,7 +13,7 @@ function ListItem(props: ItemProps) {
         return (
           (isTime(item.data) && (
             <>
-              <p key={key} className="paragraph listTitle">
+              <p key={key + 10000} className="paragraph listTitle">
                 Files:[{'\n' + item.title + '\n'}]
               </p>
               <Time data={item.data} key={key}></Time>
@@ -21,8 +21,8 @@ function ListItem(props: ItemProps) {
           )) ||
           (isMarkdown(item.data) && (
             <>
-              <p key={key} className="paragraph listTitle">
-                {item.title}
+              <p key={key + 10000} className="paragraph listTitle">
+                Files:[{item.title}]
               </p>
               <Markdown markdown={item.data.markdown} key={key}></Markdown>
             </>

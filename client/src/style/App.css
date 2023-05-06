@@ -63,6 +63,14 @@
   overflow: scroll;
 }
 
+.like {
+  color: red;
+}
+
+.unlike {
+  color: grey;
+}
+
 .listitem {
   background-color: var(--listitem);
 }

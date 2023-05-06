@@ -81,7 +81,10 @@ function App() {
       )}
       <Tooltip
         placement="right"
-        title={`Upload the files and link, then use the query to get your result. Enjoy💖`}
+        title={`
+        Upload the files and links, then use the summarize to auto sum up contents for you, or use your prompt to query.
+        Default format would be .markdown, and summarize could have timeline format if only sumbit youtube links.
+        Enjoy💖`}
         arrow={true}
         color={'grey'}
       >
@@ -151,8 +154,7 @@ function App() {
         ></FileControl>
       </div>
       <div className="repl">
-        <HistoryBox history={history}></HistoryBox>
-        {/* <hr></hr> */}
+        <HistoryBox history={history} setHistory={setHistory}></HistoryBox>
         <InputBox
           server={server}
           fileList={fileList}

@@ -43,7 +43,7 @@ describe('Element load test', () => {
       const server = 'http://localhost:8000/'
       render(
         <>
-          <HistoryBox history={history}></HistoryBox>
+          <HistoryBox history={history} setHistory={setHistory}></HistoryBox>
           <hr></hr>
           <InputBox
             server={server}
@@ -78,7 +78,9 @@ describe('Element use test', () => {
         ></FileControl>
       )
       const linkbox = screen.getByRole('textbox', { name: 'Link input box' })
-      const btn = screen.getByRole('button', { name: 'Submit button' })
+      const btn = screen.getByRole('button', { name: 'Add Link' })
+      const summary = screen.getByRole('button', { name: 'Summarize button' })
+      summary.click()
       userEvent.type(linkbox, 'asdqwas')
       btn.click()
       // add incorrect link
@@ -107,7 +109,7 @@ describe('Element use test', () => {
       const server = 'http://localhost:8000/'
       render(
         <>
-          <HistoryBox history={history}></HistoryBox>
+          <HistoryBox history={history} setHistory={setHistory}></HistoryBox>
           <hr></hr>
           <InputBox
             server={server}
@@ -119,6 +121,8 @@ describe('Element use test', () => {
       )
       const prompt = screen.getByRole('textbox', { name: 'Prompt input box' })
       const btn = screen.getByRole('button', { name: 'Prompt button' })
+      const summary = screen.getByRole('button', { name: 'Summarize button' })
+      summary.click()
       userEvent.type(prompt, 'asdqwas')
       btn.click()
       // submit no response
@@ -178,7 +182,12 @@ describe('Mock server prompt', () => {
   const server = setupServer(
     rest.get('http://mock/getdata', async (req: any, res: any, ctx: any) => {
       const { filelist, linklist, prompt, format } = await req.json()
-      return res(ctx.json({ result: 'success', data: 'Hello World' }))
+      return res(
+        ctx.json({
+          result: 'success',
+          data: [{ title: 'a.com', data: { markdown: 'Hello World' } }],
+        })
+      )
     })
   )
 
@@ -186,11 +195,11 @@ describe('Mock server prompt', () => {
   afterEach(() => server.resetHandlers())
   afterAll(() => server.close())
 
-  test('success response upload', async () => {
+  test('success response prompt', async () => {
     ;async () => {
       render(<App></App>)
       const linkbox = screen.getByRole('upload', { name: 'Link input box' })
-      const btn = screen.getByRole('button', { name: 'Submit button' })
+      const btn = screen.getByRole('button', { name: 'Add Link' })
       // add link
       userEvent.type(linkbox, 'a.com')
       btn.click()
@@ -201,6 +210,12 @@ describe('Mock server prompt', () => {
       expect(screen.getByText(/Hello World/i)).toBeInTheDocument()
       expect(screen.getByText(/Learn With GPT/i)).toBeInTheDocument()
       expect(screen.getByText(/asdqwas/i)).toBeInTheDocument()
+      expect(screen.getByText(/a.com/i)).toBeInTheDocument()
+      const remove = screen.getByRole('anchor', { name: 'delete' })
+      remove.click()
+      expect(screen.getByText(/Hello World/i)).toNotBeInTheDocument()
+      expect(screen.getByText(/asdqwas/i)).toNotBeInTheDocument()
+      expect(screen.getByText(/a.com/i)).toNotBeInTheDocument()
     }
   })
 })
@@ -217,11 +232,11 @@ describe('Mock server prompt fail', () => {
   afterEach(() => server.resetHandlers())
   afterAll(() => server.close())
 
-  test('success response upload', async () => {
+  test('error response promot', async () => {
     ;async () => {
       render(<App></App>)
       const linkbox = screen.getByRole('upload', { name: 'Link input box' })
-      const btn = screen.getByRole('button', { name: 'Submit button' })
+      const btn = screen.getByRole('button', { name: 'Add Link' })
       // add link
       userEvent.type(linkbox, 'a.com')
       btn.click()
@@ -229,6 +244,75 @@ describe('Mock server prompt fail', () => {
       const query = screen.getByRole('button', { name: 'Prompt button' })
       userEvent.type(prompt, 'asdqwas')
       query.click()
+      expect(screen.getByText(/check server/i)).toBeInTheDocument()
+      expect(screen.getByText(/Learn With GPT/i)).toBeInTheDocument()
+      expect(screen.getByText(/asdqwas/i)).toNotBeInTheDocument()
+    }
+  })
+})
+
+describe('Mock server summary success', () => {
+  const server = setupServer(
+    rest.get('http://mock/getdata', async (req: any, res: any, ctx: any) => {
+      const { filelist, linklist, prompt, format } = await req.json()
+      return res(
+        ctx.json({
+          result: 'success',
+          data: [{ title: 'a.com', data: { markdown: 'Hello World' } }],
+        })
+      )
+    })
+  )
+
+  beforeAll(() => server.listen())
+  afterEach(() => server.resetHandlers())
+  afterAll(() => server.close())
+
+  test('error response promot', async () => {
+    ;async () => {
+      render(<App></App>)
+      const linkbox = screen.getByRole('upload', { name: 'Link input box' })
+      const btn = screen.getByRole('button', { name: 'Add Link' })
+      // add link
+      userEvent.type(linkbox, 'a.com')
+      btn.click()
+      const summary = screen.getByRole('button', { name: 'Summarize button' })
+      summary.click()
+      expect(screen.getByText(/Hello World/i)).toBeInTheDocument()
+      expect(screen.getByText(/Learn With GPT/i)).toBeInTheDocument()
+      expect(screen.getByText(/asdqwas/i)).toBeInTheDocument()
+      expect(screen.getByText(/a.com/i)).toBeInTheDocument()
+      const remove = screen.getByRole('anchor', { name: 'delete' })
+      remove.click()
+      expect(screen.getByText(/Hello World/i)).toNotBeInTheDocument()
+      expect(screen.getByText(/asdqwas/i)).toNotBeInTheDocument()
+      expect(screen.getByText(/a.com/i)).toNotBeInTheDocument()
+    }
+  })
+})
+
+describe('Mock server summary fail', () => {
+  const server = setupServer(
+    rest.get('http://mock/getdata', async (req: any, res: any, ctx: any) => {
+      const { filelist, linklist, prompt, format } = await req.json()
+      return res(ctx.json({ result: 'error', data: 'check server' }))
+    })
+  )
+
+  beforeAll(() => server.listen())
+  afterEach(() => server.resetHandlers())
+  afterAll(() => server.close())
+
+  test('error response promot', async () => {
+    ;async () => {
+      render(<App></App>)
+      const linkbox = screen.getByRole('upload', { name: 'Link input box' })
+      const btn = screen.getByRole('button', { name: 'Add Link' })
+      // add link
+      userEvent.type(linkbox, 'a.com')
+      btn.click()
+      const summary = screen.getByRole('button', { name: 'Summarize button' })
+      summary.click()
       expect(screen.getByText(/check server/i)).toBeInTheDocument()
       expect(screen.getByText(/Learn With GPT/i)).toBeInTheDocument()
       expect(screen.getByText(/asdqwas/i)).toNotBeInTheDocument()
