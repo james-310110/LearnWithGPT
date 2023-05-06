@@ -109,9 +109,9 @@ class DocumentLoader:
         #     gfolder_id = parsed_url.path.split("/")[3]
         #     documents = web_reader.load_data(folder_id=gfolder_id)
         if web_extractor == "YoutubeTranscriptReader":  # youtube with timestamp
-            # documents = web_reader.load_data(ytlinks=[input_url])
-            loader = YoutubeTranscriptReader()
-            documents = loader.load_data(ytlinks=[input_url])
+            documents = web_reader.load_data(ytlinks=[input_url])
+            # loader = YoutubeTranscriptReader()
+            # documents = loader.load_data(ytlinks=[input_url])
         elif web_extractor == "BilibiliTranscriptReader":
             documents = web_reader.load_data(video_urls=[input_url])
         elif is_knowledge_base:
