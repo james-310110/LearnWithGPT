@@ -57,7 +57,7 @@ https://github.com/scli-James/LearnWithGPT.git
 
 ## Design Choices
 
-### Back-end ‘Server’ Design Choices
+### Back-end:‘Server’ Design Choices
 
 Our backend server's primary function is to process user queries based on a collection of documents, which can include uploaded files of different formats and URLs (including YouTube videos). Our project uses a "chain" of agents with various tools and memory components to generate responses to the queries. The backend is built with Django and can be deployed using either ASGI or WSGI servers, as specified by the entry points in `asgi.py` and `wsgi.py`.
 
@@ -68,7 +68,7 @@ In our most current version:
 - `langchain` will select which tool (hence which document) to use instead of traversing an index that's built on top of all documents, thereby decreasing the noise from irrelevant documents and decreasing the total token usage from OpenAI.
 - `langchain` will use `llamaindex` to store chat history as memory, thereby overcoming the limitation on token limit and allowing infinite memory.
 
-***Main Functionality and Components:**
+**Main Functionality and Components:**
 
 - apps.py: defines a Django AppConfig class, `MainConfig`, setting the default configuration for the main app.
 - admin.py: imports the Django admin module but not used in the current project.
@@ -82,13 +82,30 @@ In our most current version:
 - views.py: view functions for the main app, including get_data and post_data which process GET and POST requests, generate responses based on the type of input files and links, and then return the responses
 - youtubeWithTime.py: defines a YoutubeTranscriptReader class that inherits from BaseReader, providing functionality for extracting video IDs from YouTube links, loading YouTube transcripts, and returning the transcripts as a list of Document objects.Llama’s youtube reader does not include timestamps, so the class adds timestamps back to the transcript in order for the front-end to display video timestamps to users
 
-***Backend Functionality and Components:**
+**Backend Functionality and Components:**
 
 - configuration files and settings for the Django application. Asgi.py and Wsgi.py allow the application to be deployed with different types of servers
 - Asgi.py: entry point for the Asynchronous Server Gateway Interface server.
 - Settings.py: settings & configs for Django
 - Urls.py: defines URL patterns for the Django application. Includes main.urls module for handling routes, and sets up the Django admin site at /admin path
 - Wsgi.py: the entry point for Web Server Gateway Interface server. 
+
+### Front-end:‘Client’ Design Choices
+
+- HTML & CSS: 
+  - Based on REPL to redesign, use bootstrap V5 and ant design to make the page pretty and user-friendly.
+- TypeScript & React: Use the React to return the function as component.
+- Import file upload to allow user upload the file and link.
+- Use useState and useEffect to track the attribute and rerender the page.
+- Since it is return the .tsx function, we can just write the function with html element which is making it simple.
+Accessibility
+Provide the aria-lable to make the screen reader to identify the content.
+Use % and media to make the element fit the screent.
+Dark mode support.
+Improvement
+Use more pretty components to make the frontend user-friendly and beautiful, like the color, shape.
+Provide more format for user to choose and the response could be interactive.
+Make the response box for history to be more interesting and structural.
 
 
 
