@@ -87,6 +87,9 @@ const FileControl = (param: FileControlProps) => {
             })
           }
         })
+        param.fileList.map((item, index) => {
+          fl[index].time = item.time
+        })
         param.setFileList(fl)
       }
     },
