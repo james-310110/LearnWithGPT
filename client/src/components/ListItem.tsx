@@ -1,6 +1,7 @@
 import { DataElement, DataWrap, isMarkdown, isTime } from '../interface/DataWrap'
 import Markdown from './Markdown'
 import Time from './Timeline'
+import TreeView from './Tree'
 
 interface ItemProps {
   data: DataElement[]

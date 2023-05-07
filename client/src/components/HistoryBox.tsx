@@ -1,9 +1,6 @@
 import { Avatar, List } from 'antd'
-import { DataWrap, isMarkdown, isTime } from '../interface/DataWrap'
+import { DataWrap } from '../interface/DataWrap'
 import ListItem from './ListItem'
-import Markdown from './Markdown'
-import Time from './Timeline'
-import TreeView from './Tree'
 
 interface HistoryBoxProps {
   history: DataWrap[]

@@ -82,7 +82,8 @@ function App() {
         placement="right"
         title={`
         Upload the files and links, then use the summarize to auto sum up contents for you, or use your prompt to query.
-        Default format would be .markdown, and summarize could have timeline format if only sumbit youtube links.
+        Default format would be .markdown, and summarize could have timeline format if only sumbit youtube links. Tips:
+        Only one file or link would make it more clear, GPT is not reliable for now.
         Enjoy💖`}
         arrow={true}
         color={'grey'}

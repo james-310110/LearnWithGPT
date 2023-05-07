@@ -19,8 +19,8 @@ export default function InputBox(props: InputBoxProps) {
   const [commandHistory, setCommandHistory] = useState<string[]>([])
   const [count, setCount] = useState<number>(0)
   const [loading, setLoading] = useState(false)
-  const audio = new Audio('/public/qingtian.mp3')
-  // const audio = new Audio('/public/loading.mp3')
+  const audio = new Audio('qingtian.mp3')
+  // const audio = new Audio('loading.mp3')
 
   /**
    * Handles the submit button being clicked or the enter key being pressed!
