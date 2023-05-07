@@ -90,6 +90,12 @@ In our most current version:
 - Urls.py: defines URL patterns for the Django application. Includes main.urls module for handling routes, and sets up the Django admin site at /admin path
 - Wsgi.py: the entry point for Web Server Gateway Interface server. 
 
+**Things to bear in mind: 
+
+- the concept of collection is still used, but it's now maps colxn_id and agent_chain
+- checkout [this link](https://python.langchain.com/en/latest/modules/chains/generic/serialization.html) for how to store and retrieve agent_chain in CollectionModel
+- checkout [prompt templates](https://python.langchain.com/en/latest/modules/prompts/prompt_templates/getting_started.html) and [summarization chains](https://python.langchain.com/en/latest/modules/chains/index_examples/summarize.html) for how to summarize with custom summary prompts
+
 ### Front-end:‘Client’ Design Choices
 
 - HTML & CSS: 
@@ -113,10 +119,63 @@ In our most current version:
 - Lists for storing and processing input data and results.
 - Deque (from the collections library) for efficiently scraping knowledge base URLs.
 
-***Runtime/ space optimizations we made
+**Runtime/ space optimizations we made
 - Pipeline engineering to minimize token usage
 
+## Errors/Bugs
+
+### Back-end: 
+So far, we don't have any major bugs that prevents the web application from running based on our design. However, we do anticipate discovering more bugs as we expand on testing, improve on existig feature's performance, and account for more edge cases to make our application more user friendly for users. 
+
+### Front-end: 
+The message box show on would be delay, and the first time response maybe will not be shown!
+
+## Tests 
+
+### Back-end: 
+We currently wrote tests for the main features but we will add more tests before the final demo especially for features later implemented in our project such as the summary button for users to get a summary of their uploads. 
+
+### Front-end: 
+- Main: Since the function is not very complicated, we just test the button and some display element.
+- Mocked: We use the Mock Server Worker to mock the server to simulate. And since it is only two api, which is easy to implement.
+
+## How to run: 
+
+### Back-end:  
+
+**When it's your first time,follow these: 
+1. `conda env create -f environment.yml`
+2. `pip install "unstructured[local-inference]"`
+3. `brew install libxml2`
+4. `brew install libxslt`
+5. `brew install libmagic-dev`
+6. `brew install poppler-qt5`
+7.  `brew install tesseract-ocr`
+8.  `brew install libreoffice`
+9.  `brew install pandocs`
+10. `pip install "detectron2@git+https://github.com/facebookresearch/detectron2.git@e2ce8dc#egg=detectron2"`
+11. `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
+12. `conda activate learn-with-gpt`
+13. Run the server `python manage.py runserver`
+14. go to http://127.0.0.1:8000/{endpoint}
+15. try something like `http://127.0.0.1:8000/getdata?data={%22filelist%22:%20[%22fa%22,%20%22fb%22],%20%22linklist%22:%20[%22.com%22,%20%22.edu%22],%20%22query%22:%20%22qqq%22,%20%22format%22:%20%22html%22}`
+16. For testing, `python manage.py test --verbosity=1`
+17. `main/testdata`: files for testing; `main/urls.py`: define endpoint; `main/views.py`: define endpoint handlers; `main/tests.py`: testing endpoints
+18. each time model changed `python manage.py makemigrations && python manage.py migrate` (try delete `/migrate` and run `python manage.py migrate --run-syncdb` instead when just first building the env)
+
+**If it's not your first, follow these to run the program: 
+   1. go into the server directory in your project
+   2. `conda activate learn-with-gpt`
+
+**If you encounter issues such as "django.db.utils.OperationalError: no such table: main_documentmodel"
+   1. `python manage.py migrate --run-syncdb` and `python manage.py makemigrations && python manage.py migrate` to adapt to new models
+   2. use `answer = agent_chain.run(input=question)` to get answer
+
+### Front-end: 
+1. Use the npm install then npm run dev to run the React server.
+2. Use npm test to test the testcases which used for the script and dom.
+3. Make sure the backend is up or some function is not working.
 
 
-
-
+### Other Notes: 
+1. We plan to implement more security in the future e.g someone uploads a corrupted file 
