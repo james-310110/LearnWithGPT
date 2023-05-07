@@ -144,13 +144,21 @@ export default function InputBox(props: InputBoxProps) {
  * @returns Promise
  */
 async function getResponse(url: string): Promise<Response> {
-  return await fetch(url).catch(() => {
-    return new Response(
-      JSON.stringify({
-        result: 'Serer error',
-        msg: 'Access server failed.',
-        data: [],
-      })
-    )
-  })
+  return await fetch(url)
+    .then(function (response) {
+      // first then()
+      if (response.ok) return response
+      return new Response(
+        JSON.stringify({
+          result: 'Serer error',
+        })
+      )
+    })
+    .catch(() => {
+      return new Response(
+        JSON.stringify({
+          result: 'Serer error',
+        })
+      )
+    })
 }

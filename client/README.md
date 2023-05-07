@@ -11,6 +11,12 @@
 - Use `npm test` to test the testcases which used for the script and dom.
 - Make sure the backend is up or some function is not working.
 
+## More format interface
+
+- If you want to add more return format for user, we have provide the interface for you.
+- Add your new data format in `interface/DataWrap.tsx/DataElement` and implement proper check function.
+- After you add your format style `.tsx` file, add it into the `components/ListItem.tsx` as HTML element to make it work.
+
 ## Design
 
 - HTML & CSS
