@@ -94,18 +94,28 @@ In our most current version:
 
 - HTML & CSS: 
   - Based on REPL to redesign, use bootstrap V5 and ant design to make the page pretty and user-friendly.
-- TypeScript & React: Use the React to return the function as component.
-- Import file upload to allow user upload the file and link.
-- Use useState and useEffect to track the attribute and rerender the page.
-- Since it is return the .tsx function, we can just write the function with html element which is making it simple.
-Accessibility
-Provide the aria-lable to make the screen reader to identify the content.
-Use % and media to make the element fit the screent.
-Dark mode support.
-Improvement
-Use more pretty components to make the frontend user-friendly and beautiful, like the color, shape.
-Provide more format for user to choose and the response could be interactive.
-Make the response box for history to be more interesting and structural.
+- TypeScript & React: 
+  - Use the React to return the function as component.
+  - Import file upload to allow user upload the file and link.
+  - Use useState and useEffect to track the attribute and rerender the page.
+  - Since it is return the .tsx function, we can just write the function with html element which is making it simple.
+- Accessibility
+  - Provide the aria-lable to make the screen reader to identify the content.
+  - Use % and media to make the element fit the screent.
+  - Dark mode support.
+- Improvement
+  - Use more pretty components to make the frontend user-friendly and beautiful, like the color, shape.
+  - Provide more format for user to choose and the response could be interactive.
+  - Make the response box for history to be more interesting and structural.
+
+### Data structures we used, why we created it, and other high-level explanations
+- Python dictionaries for holding file and web content extractors and their corresponding classes. 
+- Lists for storing and processing input data and results.
+- Deque (from the collections library) for efficiently scraping knowledge base URLs.
+
+***Runtime/ space optimizations we made
+- Pipeline engineering to minimize token usage
+
 
 
 
