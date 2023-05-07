@@ -19,6 +19,8 @@ export default function InputBox(props: InputBoxProps) {
   const [commandHistory, setCommandHistory] = useState<string[]>([])
   const [count, setCount] = useState<number>(0)
   const [loading, setLoading] = useState(false)
+  const audio = new Audio('/public/qingtian.mp3')
+  // const audio = new Audio('/public/loading.mp3')
 
   /**
    * Handles the submit button being clicked or the enter key being pressed!
@@ -53,6 +55,7 @@ export default function InputBox(props: InputBoxProps) {
    */
   async function getData(args: string) {
     setLoading(true)
+    audio.play()
     const data = await getResponse(`${props.server}getdata?data=${args}`)
     const json = await data.json()
     console.log(json) // TODO
@@ -74,6 +77,7 @@ export default function InputBox(props: InputBoxProps) {
       message.error(`Error: server not response correctly.`)
     }
     setLoading(false)
+    audio.pause()
   }
 
   /**
