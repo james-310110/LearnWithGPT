@@ -18,6 +18,7 @@ def get_document_id(str1="", str2="", str3=""):
     # str2: session_id
     # str3: upload_time
     concatenated_str = str1 + str2 + str3
+    print("file info: {}".format(concatenated_str))
     encoded_str = concatenated_str.encode("utf-8")
     hash_obj = hashlib.sha256()
     hash_obj.update(encoded_str)
@@ -60,15 +61,14 @@ def get_chain_from_documents(doc_ids):
     # loading each document as a tool
     for doc_id in doc_ids:
         index = get_index(doc_id)
+        name = str(index.query("generate a name that unambiguously communicates what the document does, together with the type of the document"))
+        description = str(index.query("summarize the document in 50 words and begin your answer with 'useful for ...'"))
+        print("name: {}, description: {}".format(name, description))
         tool = Tool(
-            name="GPT Index",
+            name=name,
             # func=lambda q: str(index.as_query_engine().query(q)),
             func=lambda q: str(index.query(q)),
-            description=str(
-                index.query(
-                    "summarize the document in 50 words and begin your answer with 'useful for ...'"
-                )
-            ),
+            description= description,
             return_direct=True,
         )
         tools.append(tool)

@@ -4,6 +4,8 @@ import os
 
 from main.services import DocumentLoader
 from main.utils import get_document_id, has_index, get_collection_id, get_chain_from_documents
+from main.models import IndexModel, DocumentModel
+
 
 
 def is_youtube_video(url):
@@ -30,6 +32,7 @@ def _ask_gpt(question,web_list,file_list,collections,by_whom):
     for web_item in web_list:
         web_url = web_item["name"]
         at_when = str(web_item["time"])
+        # at_when = "0"
         doc_id = get_document_id(web_url, by_whom, at_when)
         if not has_index(doc_id):
             doc_loader.load_web(web_url, by_whom, at_when)
@@ -38,6 +41,7 @@ def _ask_gpt(question,web_list,file_list,collections,by_whom):
     for file_item in file_list:
         file_name = file_item["name"]
         at_when = str(file_item["time"])
+        # at_when = "0"
         doc_id = get_document_id(file_name, by_whom, at_when)
         if not has_index(doc_id):
             print("file not exist:",file_name)
@@ -62,8 +66,7 @@ def _build_markdown_result(title,data):
 def _build_json_result(title,str_data):
     try:
         data = json.loads(str_data.strip().replace("\n", ""))
-        if data["id"] == "youtubeid":
-            data["id"] = title.split("=")[1]
+        data["id"] = title.split("=")[1]
         return {"type":"video_json","title":title,"data":data}
     except Exception as e:
         print(e)
@@ -77,14 +80,26 @@ def summary_youtube_links_and_files(web_list,file_list,collections,by_whom):
     return _build_markdown_result(title,data)
 
 def summary_files(file_list,collections,by_whom):
-    question = "Based on everything you learned, analyze files, compare themes, identify top 3 ideas, pose 3 questions. Generate markdown-formatted answer within 150 words."
+    names = [file["name"] for file in file_list]
+    question = "Based on everything you learned, analyze files: " + ' '.join(names) + "， compare themes, identify top 3 ideas, pose 3 questions. Generate markdown-formatted answer within 150 words."
     title = "file_list_summary"
     web_list = []
     data = _ask_gpt(question,web_list,file_list,collections,by_whom)
     return _build_markdown_result(title,data)
 
 def summary_youtube_links(web_list,collections,by_whom):
-    question = "Based on everything you learned, analyze video transcripts, compare themes, identify top 3 ideas, pose 3 questions. Generate markdown-formatted answer within 150 words."
+    abouts = []
+    for web_item in web_list:
+        web_url = web_item["name"]
+        at_when = str(web_item["time"])
+        doc_id = get_document_id(web_url, by_whom, at_when)
+        if not has_index(doc_id):
+            doc_loader.load_web(web_url, by_whom, at_when)
+        index = IndexModel.get_index(doc_id)
+        about_q = "generate a name that unambiguously communicates what the document does, together with the type of the document"
+        about = str(index.query(about_q))
+        abouts.append(about)
+    question = "Based on everything you learned, analyze video transcripts: " + ' '.join(abouts) + "， compare themes, identify top 3 ideas, pose 3 questions. Generate markdown-formatted answer within 150 words."
     title = "web_link_summary"
     file_list = []
     data = _ask_gpt(question, web_list, file_list, collections, by_whom)
@@ -92,17 +107,26 @@ def summary_youtube_links(web_list,collections,by_whom):
 
 # {"name":"https://www.youtube.com/watch?v=gd5spdd0Y1s","time":1683209667233,"uid":"none"}
 def summary_youtube_link(web_item,collections,by_whom):
-    question = """summarize this video with timestamp and make it more concise,generate a json-formatted result, and give me only json format result,json format is {"id": "youtubeid","timeline": [{"time": "00:10","text": "balabala"},{"time": "00:20","text": "balabala"}]}, After summarizing, make answer more concise within 300 words."""
-    title = web_item["name"]
+    web_url = web_item["name"]
+    at_when = str(web_item["time"])
+    doc_id = get_document_id(web_url, by_whom, at_when)
+    if not has_index(doc_id):
+        doc_loader.load_web(web_url, by_whom, at_when)
+    index = IndexModel.get_index(doc_id)
+    about_q = "generate a name that unambiguously communicates what the document does, together with the type of the document"
+    about = str(index.query(about_q))
+    print(f'url: {web_url}, about: {about}')
+
+    question = """Generate a pure json result in this sample format: {"id": "youtubeid","timeline": [{"time": "important timestamp in the format MM:SS","text": "what the video starts doing at the timestamp"}]}, which gives the timeline of the entire youtube video about """ + about + """ into several important timestamps and summarize what the video is doing at the corresponding timestamp and make it more concise. Return only the json, no other words."""
     file_list = []
     web_list = [web_item]
     data = _ask_gpt(question, web_list, file_list, collections, by_whom)
-    return _build_json_result(title, data)
+    return _build_json_result(web_url, data)
 
 # {"name":"proj3 (1).pdf","time":1683211747954,"uid":"rc-upload-1683209876401-2","status":"done","percent":100}
 def summary_file(file_item,collections,by_whom):
-    question = "Based on files, summarize content and generate markdown-formatted answer within 150 words and propose 2 follow-up questions."
     title = file_item["name"]
+    question = "summarize the content of the file " + title + " and generate markdown-formatted answer within 150 words and propose 2 follow-up questions."
     file_list = [file_item]
     web_list = []
     data = _ask_gpt(question, web_list, file_list, collections, by_whom)
@@ -145,9 +169,9 @@ def summary_helper(web_list,file_list,collections,by_whom):
             and len(web_list) > 1
     ):
         total_summary = summary_youtube_links(web_list, collections, by_whom)
-        # data =  {
-        #     total_summary["title"] : total_summary
-        # }
+        data =  {
+            total_summary["title"] : total_summary
+        }
         data = [
             total_summary,
         ]
@@ -163,9 +187,9 @@ def summary_helper(web_list,file_list,collections,by_whom):
             and len(web_list) == 0
     ):
         total_summary = summary_files(file_list, collections, by_whom)
-        # data = {
-        #     total_summary["title"]: total_summary
-        # }
+        data = {
+            total_summary["title"]: total_summary
+        }
         data = [
             total_summary,
         ]
@@ -175,12 +199,12 @@ def summary_helper(web_list,file_list,collections,by_whom):
             data.append(summary)
         return _build_success_json_response(data)
 
-    total_summary = summary_youtube_links_and_files(web_list,file_list, collections, by_whom)
+    # total_summary = summary_youtube_links_and_files(web_list,file_list, collections, by_whom)
     # data = {
     #     total_summary["title"]: total_summary
     # }
     data = [
-         total_summary
+         # total_summary
     ]
     for web_item in web_list:
         summary = summary_youtube_link(web_item, collections, by_whom)

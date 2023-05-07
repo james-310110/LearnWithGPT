@@ -84,86 +84,111 @@ def get_data(request: HttpRequest):
     # }
     # return JsonResponse(response)
 
-
-    query_str = request.GET.get("data")
-    if query_str is None:
-        return JsonResponse(
-            {"result": "error_bad_request", "data": "missing field [data]"}
+    try: 
+        query_str = request.GET.get("data")
+        if query_str is None:
+            return JsonResponse(
+                {"result": "error_bad_request", "data": "missing field [data]"}
+            )
+        print(query_str)
+        query_dict = json.loads(query_str)
+        # TODO swap with session_id or user_id later
+        by_whom = (
+            "test_session_key"
+            if request.session.session_key is None
+            else request.session.session_key
         )
-    print(query_str)
-    query_dict = json.loads(query_str)
-    # TODO swap with session_id or user_id later
-    by_whom = "test_session_key"
-    # by_whom = request.session.session_key
-    file_list = query_dict["fileList"]
-    web_list = query_dict["linkList"]
-    answer_format = query_dict["format"]
-    if answer_format == "summary":
-        response = summary_helper(web_list,file_list, collections, by_whom)
+        print(by_whom)
+        # by_whom = request.session.session_key
+        file_list = query_dict["fileList"]
+        web_list = query_dict["linkList"]
+        answer_format = query_dict["format"] 
+        if answer_format == "summary":
+            response = summary_helper(web_list,file_list, collections, by_whom)
+            return JsonResponse(response)
+        title = ""
+        question = query_dict["prompt"]
+        doc_ids = []
+        # check if each file matches nodes from db
+        for file_item in file_list:
+            file_name = file_item["name"]
+            title += "\n"+file_name
+            at_when = str(file_item["time"])
+            # at_when = "0"
+            doc_id = get_document_id(file_name, by_whom, at_when)
+            if not has_index(doc_id):
+                print("file not exist: {}".format(doc_id))
+                continue
+            doc_ids.append(doc_id)
+        # check if each url matches nodes from db
+        for web_item in web_list:
+            web_url = web_item["name"]
+            title += "\n"+web_url
+            at_when = str(web_item["time"])
+            # at_when = "0"
+            doc_id = get_document_id(web_url, by_whom, at_when)
+            if not has_index(doc_id):
+                doc_loader.load_web(web_url, by_whom, at_when)
+            doc_ids.append(doc_id)
+        colxn_id = get_collection_id(doc_ids)
+        # setting/getting agent_chain to query 
+        if colxn_id in collections.keys():
+            print("collection already exists")
+            agent_chain = collections.get(colxn_id)
+        else:
+            print("collection not exists")
+            agent_chain = get_chain_from_documents(doc_ids)
+            collections[colxn_id] = agent_chain
+        if answer_format == "paragraph":
+            question = "generate a markdown-formatted answer for this question: " + question
+            print(question)
+        print("question:",question)
+        # querying answer from agent_chain
+        answer = agent_chain.run(input=question)
+        # answer = index.query(question, mode="default")
+        print(f"question: {question}, answer: {answer}")
+        response = {}
+        response["result"] = "success"
+        response["data"] = [
+            {
+                "data":{"markdown":answer},
+                "title":title
+            }
+        ]
+        print(response)
         return JsonResponse(response)
-    title = ""
-    question = query_dict["prompt"]
-    doc_ids = []
-    # check if each file matches nodes from db
-    for file_item in file_list:
-        file_name = file_item["name"]
-        title += "\n"+file_name
-        at_when = str(file_item["time"])
-        doc_id = get_document_id(file_name, by_whom, at_when)
-        if not has_index(doc_id):
-            print("file not exist")
-            continue
-        doc_ids.append(doc_id)
-    # check if each url matches nodes from db
-    for web_item in web_list:
-        web_url = web_item["name"]
-        title += "\n"+web_url
-        at_when = str(web_item["time"])
-        doc_id = get_document_id(web_url, by_whom, at_when)
-        if not has_index(doc_id):
-            doc_loader.load_web(web_url, by_whom, at_when)
-        doc_ids.append(doc_id)
-    colxn_id = get_collection_id(doc_ids)
-    # setting/getting agent_chain to query 
-    if colxn_id in collections.keys():
-        print("collection already exists")
-        agent_chain = collections.get(colxn_id)
-    else:
-        print("collection not exists")
-        agent_chain = get_chain_from_documents(doc_ids)
-        collections[colxn_id] = agent_chain
-    if answer_format == "paragraph":
-        question = "generate a markdown-formatted answer for this question: " + question
-        print(question)
-    print("question:",question)
-    # querying answer from agent_chain
-    answer = agent_chain.run(input=question)
-    # answer = index.query(question, mode="default")
-    print(f"question: {question}, answer: {answer}")
-    response = {}
-    response["result"] = "success"
-    response["data"] = [
-        {
-            "data":{"markdown":answer},
-            "title":title
-        }
-    ]
-    print(response)
 
-    return JsonResponse(response)
+    except Exception as e:
+        response = {}
+        response["result"] = "error_bad_datasource"
+        response["data"] = e.__str__()
+        return JsonResponse(response)
+
 
 
 def post_data(request: HttpRequest):
-    input_file = request.FILES.get("file")
-    # TODO swap with session_id or user_id later
-    by_whom = (
-        "test_session_key"
-        if request.session.session_key is None
-        else request.session.session_key
-    )
-    # by_whom = request.session.session_key
-    at_when = request.GET.get("upload_time")
-    if input_file is None:
-        return JsonResponse({"result": "error_bad_request", "data": "missing file"})
-    doc_loader.load_file(input_file, by_whom, at_when)
-    return JsonResponse({"result": "success"})
+    try: 
+        input_file = request.FILES.get("file")
+        # TODO swap with session_id or user_id later
+        by_whom = (
+            "test_session_key"
+            if request.session.session_key is None
+            else request.session.session_key
+        )
+        # by_whom = request.session.session_key
+        at_when = request.GET.get("upload_time")
+        # at_when = "0"
+        if input_file is None:
+            return HttpResponse(status=500)
+            # return JsonResponse({"result": "error_bad_request", "data": "missing file"})
+        if input_file.size > 2 * 1024 * 1024:
+            return HttpResponse(status=500)
+            # return JsonResponse({"result": "error_bad_request", "data": "file size exceed 2MB"})
+        doc_loader.load_file(input_file, by_whom, at_when)
+        return JsonResponse({"result": "success"})
+    except Exception as e:
+        # response = {}
+        # response["result"] = "error_bad_request"
+        # response["data"] = e.__str__()
+        return HttpResponse(status=500)
+        # return JsonResponse(response)
