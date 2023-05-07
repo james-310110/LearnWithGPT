@@ -37,10 +37,8 @@ const FileControl = (param: FileControlProps) => {
       })
       if (exist) {
         message.error(`${file.name} is exist, please remove first`)
-        message.error(`${file.name} is exist, please remove first`)
       }
       if (!oversize) {
-        message.error(`${file.name} is too big, please check the size`)
         message.error(`${file.name} is too big, please check the size`)
       }
       return oversize && !exist
@@ -49,9 +47,7 @@ const FileControl = (param: FileControlProps) => {
       const { status } = info.file
       if (status === 'done') {
         message.success(`${info.file.name} file uploaded successfully.`)
-        message.success(`${info.file.name} file uploaded successfully.`)
       } else if (status === 'error') {
-        message.error(`${info.file.name} file upload failed.`)
         message.error(`${info.file.name} file upload failed.`)
       }
       if (info.file.name != undefined) {

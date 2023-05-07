@@ -71,9 +71,7 @@ export default function InputBox(props: InputBoxProps) {
       }
     } else if (isErrorResponse(json)) {
       message.error(`Error: ${json.data}`)
-      message.error(`Error: ${json.data}`)
     } else {
-      message.error(`Error: server not response correctly.`)
       message.error(`Error: server not response correctly.`)
     }
     setLoading(false)

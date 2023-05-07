@@ -1,9 +1,10 @@
-New Updates:
+New Updates: (back-end specific) 
 
 1. how to use
 
-   1. run `python manage.py migrate --run-syncdb` and `python manage.py makemigrations && python manage.py migrate` to adapt to new models
-   2. use `answer = agent_chain.run(input=question)` to get answer
+   1. `conda activate learn-with-gpt`
+   2. run `python manage.py migrate --run-syncdb` and `python manage.py makemigrations && python manage.py migrate` to adapt to new models
+   3. use `answer = agent_chain.run(input=question)` to get answer
 
 2. design updates
    1. abandoned DocumentModel and CollectionModel and migrated to IndexModel
@@ -11,14 +12,15 @@ New Updates:
       1. each document is now stored as an instance of IndexModel, and later retrieved and used to build tools for chain_agent from langchain to use
       2. langchain will select which tool (hence which document) to use instead of traversing an index that's built on top of all documents, thereby decreasing the noise from irrelevant documents and decreasing the total token usage from openai
       3. langchain will use llamaindex to store chat history as memory, thereby overcoming the limitation on token limit and allowing infinite memory
-      4.
+     
 3. things to bear in mind:
 
-   1. the concept of collection is still used, but it's now maps colxn_id and agent_chain
-   2. checkout [this link](https://python.langchain.com/en/latest/modules/chains/generic/serialization.html) for how to store and retrieve agent_chain in CollectionModel
-   3. checkout [prompt templates](https://python.langchain.com/en/latest/modules/prompts/prompt_templates/getting_started.html) and [summarization chains](https://python.langchain.com/en/latest/modules/chains/index_examples/summarize.html) for how to summarize with custom summary prompts
+   1. we plan to and will implement more tests 
+   2. the concept of collection is still used, but it's now maps colxn_id and agent_chain
+   3. checkout [this link](https://python.langchain.com/en/latest/modules/chains/generic/serialization.html) for how to store and retrieve agent_chain in CollectionModel
+   4. checkout [prompt templates](https://python.langchain.com/en/latest/modules/prompts/prompt_templates/getting_started.html) and [summarization chains](https://python.langchain.com/en/latest/modules/chains/index_examples/summarize.html) for how to summarize with custom summary prompts
 
-Old docs: 
+To set up if it's your first time: 
 1. `conda env create -f environment.yml`
 2. `pip install "unstructured[local-inference]"`
 3. `brew install libxml2`
