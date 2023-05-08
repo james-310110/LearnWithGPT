@@ -81,7 +81,7 @@ def summary_youtube_links_and_files(web_list,file_list,collections,by_whom):
 
 def summary_files(file_list,collections,by_whom):
     names = [file["name"] for file in file_list]
-    question = "Based on everything you learned, analyze files: " + ' '.join(names) + "， compare themes, identify top 3 ideas, pose 3 questions. Generate markdown-formatted answer within 150 words."
+    question = "Based on everything you learned, analyze files: " + ' '.join(names) + "， compare themes, identify top 3 ideas, pose 3 questions. Generate markdown-formatted answer within 300 words."
     title = "file_list_summary"
     web_list = []
     data = _ask_gpt(question,web_list,file_list,collections,by_whom)
@@ -117,7 +117,7 @@ def summary_youtube_link(web_item,collections,by_whom):
     about = str(index.query(about_q))
     print(f'url: {web_url}, about: {about}')
 
-    question = """Generate a pure json result in this sample format: {"id": "youtubeid","timeline": [{"time": "important timestamp in the format MM:SS","text": "what the video starts doing at the timestamp"}]}, which gives the timeline of the entire youtube video about """ + about + """ into several important timestamps and summarize what the video is doing at the corresponding timestamp and make it more concise. Return only the json, no other words."""
+    question = """Generate a pure json result in this sample format: {"id": "youtubeid","timeline": [{"time": "important timestamp in the format MM:SS","text": "what the video starts doing at the timestamp"}]}, which gives the timeline of the entire youtube video about """ + about + """ into several important timestamps and summarize what the video is doing at the corresponding timestamp and make it more concise. Return only the json, no other words. Start response with "{", end with "}" """
     file_list = []
     web_list = [web_item]
     data = _ask_gpt(question, web_list, file_list, collections, by_whom)
