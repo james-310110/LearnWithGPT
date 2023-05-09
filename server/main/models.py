@@ -9,6 +9,8 @@ from llama_index import (
     PromptHelper,
 )
 from langchain import OpenAI
+import datetime
+
 
 
 # deprecated
@@ -39,6 +41,8 @@ class DocumentModel(models.Model):
 class IndexModel(models.Model):
     uid = models.CharField(primary_key=True, max_length=256)
     content = models.TextField()
+    exp_date = models.DateTimeField()
+
 
     @classmethod
     def set_index(cls, uid, nodes):
@@ -59,11 +63,16 @@ class IndexModel(models.Model):
             GPTSimpleVectorIndex(
                 nodes, service_context=service_context
             ).save_to_string(),
+            datetime.datetime.now() + datetime.timedelta(hours=24)
         )
         index.save()
 
     @classmethod
     def get_index(cls, uid):
+        all_idxs = cls.objects.all()
+        for idx in all_idxs:
+            if datetime.datetime.now() > idx.exp_date:
+                idx.delete()
         index = cls.objects.get(uid=uid)
         return GPTSimpleVectorIndex.load_from_string(index.content)
 
