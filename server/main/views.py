@@ -15,6 +15,7 @@ from main.utils import *
 import json
 import os
 import json
+import traceback
 
 # loading openai api key from json file beforeAll
 with open("keys_and_tokens.json", "r") as f:
@@ -84,6 +85,7 @@ def get_data(request: HttpRequest):
     # }
     # return JsonResponse(response)
 
+    # error handling
     try: 
         query_str = request.GET.get("data")
         if query_str is None:
@@ -102,6 +104,7 @@ def get_data(request: HttpRequest):
         # by_whom = request.session.session_key
         file_list = query_dict["fileList"]
         web_list = query_dict["linkList"]
+        # summary button
         answer_format = query_dict["format"] 
         if answer_format == "summary":
             response = summary_helper(web_list,file_list, collections, by_whom)
@@ -151,14 +154,15 @@ def get_data(request: HttpRequest):
         response["result"] = "success"
         response["data"] = [
             {
-                "data":{"markdown":answer},
-                "title":title
+                "data": {"markdown": answer},
+                "title": title
             }
         ]
         print(response)
         return JsonResponse(response)
 
     except Exception as e:
+        # traceback.print_exc(e)
         response = {}
         response["result"] = "error_bad_datasource"
         response["data"] = e.__str__()
@@ -187,6 +191,7 @@ def post_data(request: HttpRequest):
         doc_loader.load_file(input_file, by_whom, at_when)
         return JsonResponse({"result": "success"})
     except Exception as e:
+        # traceback.print_exc()
         # response = {}
         # response["result"] = "error_bad_request"
         # response["data"] = e.__str__()
