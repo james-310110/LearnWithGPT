@@ -83,7 +83,7 @@ def summary_youtube_links_and_files(web_list,file_list,collections,by_whom):
 
 def summary_files(file_list,collections,by_whom):
     names = [file["name"] for file in file_list]
-    question = "Based on everything you learned, analyze files: " + ' '.join(names) + "， compare themes, identify top 3 ideas, pose 3 questions. Generate markdown-formatted answer within 300 words."
+    question = "Based on everything you learned, analyze files: " + ' '.join(names) + "， compare themes, identify top 3 ideas, pose 3 questions. Generate markdown-formatted answer within 600 words."
     title = "file_list_summary"
     web_list = []
     data = _ask_gpt(question,web_list,file_list,collections,by_whom)
@@ -122,17 +122,17 @@ def summary_youtube_link(web_item,collections,by_whom):
     about = str(index.query(about_q))
     print(f'url: {web_url}, about: {about}')
 
-    question = """Generate a pure json result in this sample format: {"id": "youtubeid","timeline": [{"time": "important timestamp in the format MM:SS","text": "what the video starts doing at the timestamp"}]}, which gives the timeline of the entire youtube video about """ + about + """ into several important timestamps and summarize what the video is doing at the corresponding timestamp and make it more concise. Return only the json, no other words. Start response with "{", end with "}" """
+    question = """Generate a pure json result for the video  """ + about + """ in this sample format: {"id": "youtubeid","timeline": [{"time": "important timestamp in the format MM:SS","text": "what the video is doing at the timestamp"}]}, which gives the timeline of the entire youtube video into several important timestamps and summarize what the video is doing at the corresponding timestamp and make it more concise. Return only the json, no other words. Start response with "{", end with "}" """
     file_list = []
     web_list = [web_item]
     data = _ask_gpt(question, web_list, file_list, collections, by_whom)
     return _build_json_result(web_url, data)
 
 # {"name":"proj3 (1).pdf","time":1683211747954,"uid":"rc-upload-1683209876401-2","status":"done","percent":100}
-def summary_file(file_item,collections,by_whom):
+def summary_file(file_item,collections,by_whom,file_list):
     title = file_item["name"]
     question = "summarize the content of the file " + title + " and generate markdown-formatted answer within 150 words and propose 2 follow-up questions."
-    file_list = [file_item]
+    # file_list = [file_item]
     web_list = []
     data = _ask_gpt(question, web_list, file_list, collections, by_whom)
     return _build_markdown_result(title, data)
@@ -170,7 +170,7 @@ def summary_helper(web_list,file_list,collections,by_whom):
     ):
         response = {}
         file_item = file_list[0]
-        result = summary_file(file_item,collections,by_whom)
+        result = summary_file(file_item,collections,by_whom, file_list)
         print("summary_file result:",result)
         return _build_success_json_response([result,])
 
@@ -204,7 +204,7 @@ def summary_helper(web_list,file_list,collections,by_whom):
             total_summary,
         ]
         for file_item in file_list:
-            summary =  summary_file(file_item, collections, by_whom)
+            summary =  summary_file(file_item, collections, by_whom, file_list)
             # data[ summary["title"] ] = summary
             data.append(summary)
         return _build_success_json_response(data)
@@ -221,7 +221,7 @@ def summary_helper(web_list,file_list,collections,by_whom):
         # data[summary["title"]] = summary
         data.append(summary)
     for file_item in file_list:
-        summary = summary_file(file_item, collections, by_whom)
+        summary = summary_file(file_item, collections, by_whom, file_list)
         # data[summary["title"]] = summary
         data.append(summary)
     return _build_success_json_response(data)

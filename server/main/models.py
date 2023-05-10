@@ -10,6 +10,8 @@ from llama_index import (
 )
 from langchain import OpenAI
 import datetime
+from django.utils import timezone
+
 
 
 
@@ -63,7 +65,7 @@ class IndexModel(models.Model):
             GPTSimpleVectorIndex(
                 nodes, service_context=service_context
             ).save_to_string(),
-            datetime.datetime.now() + datetime.timedelta(hours=24)
+            timezone.now() + datetime.timedelta(hours=24)
         )
         index.save()
 
@@ -71,7 +73,7 @@ class IndexModel(models.Model):
     def get_index(cls, uid):
         all_idxs = cls.objects.all()
         for idx in all_idxs:
-            if datetime.datetime.now() > idx.exp_date:
+            if timezone.now() > idx.exp_date:
                 idx.delete()
         index = cls.objects.get(uid=uid)
         return GPTSimpleVectorIndex.load_from_string(index.content)

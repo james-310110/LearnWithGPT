@@ -166,6 +166,7 @@ def get_data(request: HttpRequest):
         response = {}
         response["result"] = "error_bad_datasource"
         response["data"] = e.__str__()
+        print(e.__str__())
         return JsonResponse(response)
 
 
@@ -195,5 +196,6 @@ def post_data(request: HttpRequest):
         # response = {}
         # response["result"] = "error_bad_request"
         # response["data"] = e.__str__()
+        print(e.__str__())
         return HttpResponse(status=500)
         # return JsonResponse(response)
